@@ -208,13 +208,14 @@
                             <tr>
                                 <th>ลำดับ</th>
                                 <th>คำถาม</th>
+                                <th>คำตอบ</th>
                                 <th>สถานะ</th>
                                 <th>การจัดการ</th>
                             </tr>
                         </thead>
                         <tbody id="faq-table-body">
                             <tr class="loading-row">
-                                <td colspan="4">กำลังโหลด...</td>
+                                <td colspan="5">กำลังโหลด...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -588,6 +589,42 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closePopupModal()">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div class="modal" id="faq-modal">
+        <div class="modal-backdrop" onclick="closeFaqModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="faq-modal-title">เพิ่ม FAQ</h2>
+                <button class="modal-close" onclick="closeFaqModal()">&times;</button>
+            </div>
+            <form id="faq-form" class="modal-body" onsubmit="event.preventDefault(); saveFaq();">
+                <input type="hidden" id="faq-id">
+                <div class="form-group">
+                    <label for="faq-order">ลำดับ *</label>
+                    <input type="number" id="faq-order" required min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="faq-question">คำถาม *</label>
+                    <input type="text" id="faq-question" required placeholder="มีคำถามอะไร?">
+                </div>
+                <div class="form-group">
+                    <label for="faq-answer">คำตอบ *</label>
+                    <textarea id="faq-answer" rows="5" required placeholder="คำตอบสำหรับคำถามนี้..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="faq-active" checked>
+                        <span>เปิดใช้งาน</span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeFaqModal()">ยกเลิก</button>
                     <button type="submit" class="btn btn-primary">บันทึก</button>
                 </div>
             </form>

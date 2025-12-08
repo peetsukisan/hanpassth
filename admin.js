@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadPromotions();
     await loadGuides();
     await loadPopups();
+    await loadFaqsAdmin();
 });
 
 // ==================== QUILL EDITOR ====================
@@ -853,6 +854,164 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
+// ==================== FAQ MANAGEMENT ====================
+
+let faqs = [];
+
+async function loadFaqsAdmin() {
+    try {
+        faqs = await dbService.getFaqs(false);
+        renderFaqsTable();
+    } catch (error) {
+        console.error('Error loading FAQs:', error);
+        showToast('เกิดข้อผิดพลาดในการโหลด FAQ', 'error');
+    }
+}
+
+function renderFaqsTable() {
+    const tbody = document.getElementById('faq-table-body');
+
+    if (!tbody) return;
+
+    if (faqs.length === 0) {
+        tbody.innerHTML = `
+            <tr class="loading-row">
+                <td colspan="5">ยังไม่มี FAQ <a href="#" onclick="openFaqModal()">เพิ่ม FAQ แรก</a></td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = faqs.map((faq, index) => `
+        <tr>
+            <td>${faq.order || index + 1}</td>
+            <td><strong>${faq.question || '-'}</strong></td>
+            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${faq.answer || '-'}</td>
+            <td>
+                <label class="toggle-switch">
+                    <input type="checkbox" ${faq.isActive ? 'checked' : ''} onchange="toggleFaqStatus('${faq.id}', this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon edit" onclick="editFaq('${faq.id}')" title="แก้ไข">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon delete" onclick="deleteFaq('${faq.id}')" title="ลบ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function openFaqModal(faqData = null) {
+    const modal = document.getElementById('faq-modal');
+    const form = document.getElementById('faq-form');
+    const title = document.getElementById('faq-modal-title');
+
+    // Reset form
+    form.reset();
+    document.getElementById('faq-id').value = '';
+
+    if (faqData) {
+        title.textContent = 'แก้ไข FAQ';
+        document.getElementById('faq-id').value = faqData.id;
+        document.getElementById('faq-order').value = faqData.order || 1;
+        document.getElementById('faq-question').value = faqData.question || '';
+        document.getElementById('faq-answer').value = faqData.answer || '';
+        document.getElementById('faq-active').checked = faqData.isActive !== false;
+    } else {
+        title.textContent = 'เพิ่ม FAQ ใหม่';
+        document.getElementById('faq-order').value = faqs.length + 1;
+        document.getElementById('faq-active').checked = true;
+    }
+
+    modal.classList.add('active');
+}
+
+function closeFaqModal() {
+    const modal = document.getElementById('faq-modal');
+    modal.classList.remove('active');
+}
+
+async function saveFaq() {
+    const id = document.getElementById('faq-id').value;
+    const order = parseInt(document.getElementById('faq-order').value) || 1;
+    const question = document.getElementById('faq-question').value.trim();
+    const answer = document.getElementById('faq-answer').value.trim();
+    const isActive = document.getElementById('faq-active').checked;
+
+    if (!question || !answer) {
+        showToast('กรุณากรอกคำถามและคำตอบ', 'error');
+        return;
+    }
+
+    try {
+        const faqData = {
+            order,
+            question,
+            answer,
+            isActive
+        };
+
+        if (id) {
+            await dbService.updateFaq(id, faqData);
+            showToast('แก้ไข FAQ สำเร็จ', 'success');
+        } else {
+            await dbService.addFaq(faqData);
+            showToast('เพิ่ม FAQ สำเร็จ', 'success');
+        }
+
+        closeFaqModal();
+        await loadFaqsAdmin();
+    } catch (error) {
+        console.error('Error saving FAQ:', error);
+        showToast('เกิดข้อผิดพลาดในการบันทึก', 'error');
+    }
+}
+
+function editFaq(id) {
+    const faq = faqs.find(f => f.id === id);
+    if (faq) {
+        openFaqModal(faq);
+    }
+}
+
+async function deleteFaq(id) {
+    if (!confirm('คุณต้องการลบ FAQ นี้ใช่หรือไม่?')) return;
+
+    try {
+        await dbService.deleteFaq(id);
+        showToast('ลบ FAQ สำเร็จ', 'success');
+        await loadFaqsAdmin();
+    } catch (error) {
+        console.error('Error deleting FAQ:', error);
+        showToast('เกิดข้อผิดพลาดในการลบ', 'error');
+    }
+}
+
+async function toggleFaqStatus(id, isActive) {
+    try {
+        await dbService.updateFaq(id, { isActive });
+        showToast(isActive ? 'เปิด FAQ แล้ว' : 'ปิด FAQ แล้ว', 'success');
+        const faq = faqs.find(f => f.id === id);
+        if (faq) faq.isActive = isActive;
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+        await loadFaqsAdmin();
+    }
+}
+
 // Expose functions globally
 window.openPromoModal = openPromoModal;
 window.closePromoModal = closePromoModal;
@@ -884,3 +1043,11 @@ window.editPopup = editPopup;
 window.deletePopup = deletePopup;
 window.togglePopupType = togglePopupType;
 window.togglePopupStatus = togglePopupStatus;
+
+// FAQ exports
+window.openFaqModal = openFaqModal;
+window.closeFaqModal = closeFaqModal;
+window.saveFaq = saveFaq;
+window.editFaq = editFaq;
+window.deleteFaq = deleteFaq;
+window.toggleFaqStatus = toggleFaqStatus;
