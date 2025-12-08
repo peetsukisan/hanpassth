@@ -9,19 +9,19 @@ const dbService = {
             // Query without orderBy to avoid needing composite index
             const snapshot = await db.collection('promotions').get();
             let results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
+
             // Filter active only in JavaScript
             if (activeOnly) {
                 results = results.filter(item => item.isActive === true);
             }
-            
+
             // Sort by createdAt or order
             results.sort((a, b) => {
                 const aTime = a.createdAt?.toMillis?.() || 0;
                 const bTime = b.createdAt?.toMillis?.() || 0;
                 return bTime - aTime;
             });
-            
+
             return results;
         } catch (error) {
             console.error('Error getting promotions:', error);
@@ -93,15 +93,15 @@ const dbService = {
             // Query without orderBy to avoid needing composite index
             const snapshot = await db.collection('guides').get();
             let results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
+
             // Filter active only in JavaScript
             if (activeOnly) {
                 results = results.filter(item => item.isActive === true);
             }
-            
+
             // Sort by order field
             results.sort((a, b) => (a.order || 0) - (b.order || 0));
-            
+
             return results;
         } catch (error) {
             console.error('Error getting guides:', error);
@@ -161,6 +161,68 @@ const dbService = {
             return true;
         } catch (error) {
             console.error('Error deleting guide:', error);
+            throw error;
+        }
+    },
+
+    // ==================== POPUP ADS ====================
+
+    // Get all popup ads (max 3)
+    async getPopups(activeOnly = false) {
+        try {
+            const snapshot = await db.collection('popups').get();
+            let results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            if (activeOnly) {
+                results = results.filter(item => item.isActive === true);
+            }
+
+            results.sort((a, b) => (a.order || 0) - (b.order || 0));
+            return results.slice(0, 3);
+        } catch (error) {
+            console.error('Error getting popups:', error);
+            return [];
+        }
+    },
+
+    // Add popup ad
+    async addPopup(data) {
+        try {
+            const popupData = {
+                ...data,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                isActive: data.isActive !== undefined ? data.isActive : true
+            };
+            const docRef = await db.collection('popups').add(popupData);
+            return { id: docRef.id, ...popupData };
+        } catch (error) {
+            console.error('Error adding popup:', error);
+            throw error;
+        }
+    },
+
+    // Update popup ad
+    async updatePopup(id, data) {
+        try {
+            const updateData = {
+                ...data,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection('popups').doc(id).update(updateData);
+            return { id, ...updateData };
+        } catch (error) {
+            console.error('Error updating popup:', error);
+            throw error;
+        }
+    },
+
+    // Delete popup ad
+    async deletePopup(id) {
+        try {
+            await db.collection('popups').doc(id).delete();
+            return true;
+        } catch (error) {
+            console.error('Error deleting popup:', error);
             throw error;
         }
     }

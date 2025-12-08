@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load data
     await loadPromotions();
     await loadGuides();
+    await loadPopups();
 });
 
 // ==================== QUILL EDITOR ====================
@@ -120,6 +121,189 @@ function initTabs() {
             document.getElementById(`${tabId}-tab`).classList.add('active');
         });
     });
+}
+
+// ==================== POPUP ADS ====================
+
+let popups = [];
+
+async function loadPopups() {
+    try {
+        popups = await dbService.getPopups();
+        renderPopupsTable();
+        updateAddPopupButton();
+    } catch (error) {
+        console.error('Error loading popups:', error);
+        showToast('เกิดข้อผิดพลาดในการโหลด Popup', 'error');
+    }
+}
+
+function updateAddPopupButton() {
+    const btn = document.getElementById('add-popup-btn');
+    if (btn) {
+        btn.disabled = popups.length >= 3;
+        btn.style.opacity = popups.length >= 3 ? '0.5' : '1';
+    }
+}
+
+function renderPopupsTable() {
+    const tbody = document.getElementById('popups-table-body');
+    if (!tbody) return;
+
+    if (popups.length === 0) {
+        tbody.innerHTML = `
+            <tr class="loading-row">
+                <td colspan="5">ยังไม่มี Popup <a href="#" onclick="openPopupModal()">เพิ่ม Popup แรก</a></td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = popups.map(popup => `
+        <tr>
+            <td><strong style="color: var(--primary-blue);">${popup.order || '-'}</strong></td>
+            <td>
+                <strong>${popup.title || 'ไม่มีชื่อ'}</strong>
+                <small style="display:block;color:#888;">${popup.type === 'image' ? '🖼️ รูปภาพ' : '📝 ข้อความ'}</small>
+            </td>
+            <td>
+                <label class="toggle-switch">
+                    <input type="checkbox" ${popup.isActive ? 'checked' : ''} onchange="togglePopupStatus('${popup.id}', this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </td>
+            <td>${formatDate(popup.createdAt)}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-icon edit" onclick="editPopup('${popup.id}')" title="แก้ไข">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon delete" onclick="deletePopup('${popup.id}')" title="ลบ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function togglePopupType() {
+    const isImage = document.getElementById('popup-type-image').checked;
+    document.getElementById('popup-image-group').style.display = isImage ? 'block' : 'none';
+    document.getElementById('popup-text-group').style.display = isImage ? 'none' : 'block';
+}
+
+function openPopupModal(popupData = null) {
+    if (!popupData && popups.length >= 3) {
+        showToast('สามารถมี Popup ได้สูงสุด 3 อัน', 'error');
+        return;
+    }
+
+    const modal = document.getElementById('popup-modal');
+    const form = document.getElementById('popup-form');
+    const title = document.getElementById('popup-modal-title');
+
+    form.reset();
+    document.getElementById('popup-type-image').checked = true;
+    togglePopupType();
+
+    if (popupData) {
+        title.textContent = 'แก้ไข Popup';
+        document.getElementById('popup-id').value = popupData.id;
+        document.getElementById('popup-order').value = popupData.order || 1;
+        document.getElementById('popup-title').value = popupData.title || '';
+        document.getElementById('popup-image').value = popupData.image || '';
+        document.getElementById('popup-heading').value = popupData.heading || '';
+        document.getElementById('popup-message').value = popupData.message || '';
+        document.getElementById('popup-button-text').value = popupData.buttonText || 'ดูเพิ่มเติม';
+        document.getElementById('popup-link').value = popupData.link || '';
+        document.getElementById('popup-active').checked = popupData.isActive !== false;
+
+        if (popupData.type === 'text') {
+            document.getElementById('popup-type-text').checked = true;
+            togglePopupType();
+        }
+    } else {
+        title.textContent = 'เพิ่ม Popup';
+        document.getElementById('popup-id').value = '';
+        document.getElementById('popup-order').value = popups.length + 1;
+        document.getElementById('popup-active').checked = true;
+    }
+
+    modal.classList.add('active');
+}
+
+function closePopupModal() {
+    document.getElementById('popup-modal').classList.remove('active');
+}
+
+async function savePopup(e) {
+    e.preventDefault();
+
+    const id = document.getElementById('popup-id').value;
+    const isImage = document.getElementById('popup-type-image').checked;
+
+    const data = {
+        order: parseInt(document.getElementById('popup-order').value) || 1,
+        title: document.getElementById('popup-title').value,
+        type: isImage ? 'image' : 'text',
+        image: isImage ? document.getElementById('popup-image').value : '',
+        heading: !isImage ? document.getElementById('popup-heading').value : '',
+        message: !isImage ? document.getElementById('popup-message').value : '',
+        buttonText: document.getElementById('popup-button-text').value || 'ดูเพิ่มเติม',
+        link: document.getElementById('popup-link').value,
+        isActive: document.getElementById('popup-active').checked
+    };
+
+    try {
+        if (id) {
+            await dbService.updatePopup(id, data);
+            showToast('อัพเดท Popup สำเร็จ', 'success');
+        } else {
+            await dbService.addPopup(data);
+            showToast('เพิ่ม Popup สำเร็จ', 'success');
+        }
+        closePopupModal();
+        await loadPopups();
+    } catch (error) {
+        console.error('Error saving popup:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+    }
+}
+
+function editPopup(id) {
+    const popup = popups.find(p => p.id === id);
+    if (popup) openPopupModal(popup);
+}
+
+async function deletePopup(id) {
+    if (!confirm('ต้องการลบ Popup นี้?')) return;
+
+    try {
+        await dbService.deletePopup(id);
+        showToast('ลบ Popup สำเร็จ', 'success');
+        await loadPopups();
+    } catch (error) {
+        console.error('Error deleting popup:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+    }
+}
+
+async function togglePopupStatus(id, isActive) {
+    try {
+        await dbService.updatePopup(id, { isActive });
+        showToast(isActive ? 'เปิด Popup แล้ว' : 'ปิด Popup แล้ว', 'success');
+        const popup = popups.find(p => p.id === id);
+        if (popup) popup.isActive = isActive;
+    } catch (error) {
+        console.error('Error:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+        await loadPopups();
+    }
 }
 
 // ==================== PROMOTIONS ====================
@@ -410,7 +594,7 @@ function renderGuidesTable() {
     if (guides.length === 0) {
         tbody.innerHTML = `
             <tr class="loading-row">
-                <td colspan="5">ยังไม่มีขั้นตอน <a href="#" onclick="openGuideModal()">เพิ่มขั้นตอนแรก</a></td>
+                <td colspan="6">ยังไม่มีขั้นตอน <a href="#" onclick="openGuideModal()">เพิ่มขั้นตอนแรก</a></td>
             </tr>
         `;
         return;
@@ -421,7 +605,13 @@ function renderGuidesTable() {
             <td><strong style="color: var(--primary-blue);">${guide.order || '-'}</strong></td>
             <td><strong>${guide.title || '-'}</strong></td>
             <td>${guide.description || '-'}</td>
-            <td><span class="status-badge ${guide.isActive ? 'active' : 'inactive'}">${guide.isActive ? 'เปิดใช้งาน' : 'ปิด'}</span></td>
+            <td>
+                <label class="toggle-switch">
+                    <input type="checkbox" ${guide.isActive ? 'checked' : ''} onchange="toggleGuideStatus('${guide.id}', this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </td>
+            <td>${formatDate(guide.createdAt)}</td>
             <td>
                 <div class="action-buttons">
                     <button class="btn-icon edit" onclick="editGuide('${guide.id}')" title="แก้ไข">
@@ -595,6 +785,20 @@ async function deleteGuide(id) {
     }
 }
 
+// Toggle guide active status
+async function toggleGuideStatus(id, isActive) {
+    try {
+        await dbService.updateGuide(id, { isActive: isActive });
+        showToast(isActive ? 'เปิดใช้งานแล้ว' : 'ปิดใช้งานแล้ว', 'success');
+        const guide = guides.find(g => g.id === id);
+        if (guide) guide.isActive = isActive;
+    } catch (error) {
+        console.error('Error updating status:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+        await loadGuides();
+    }
+}
+
 // ==================== UTILITY ====================
 
 function formatDate(timestamp) {
@@ -642,3 +846,13 @@ window.updatePromoBadge = updatePromoBadge;
 window.toggleGuideDisplayType = toggleGuideDisplayType;
 window.toggleGuideBgType = toggleGuideBgType;
 window.toggleGuideContentType = toggleGuideContentType;
+window.toggleGuideStatus = toggleGuideStatus;
+
+// Popup exports
+window.openPopupModal = openPopupModal;
+window.closePopupModal = closePopupModal;
+window.savePopup = savePopup;
+window.editPopup = editPopup;
+window.deletePopup = deletePopup;
+window.togglePopupType = togglePopupType;
+window.togglePopupStatus = togglePopupStatus;

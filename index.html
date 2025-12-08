@@ -118,14 +118,17 @@
         </div>
     </footer>
 
-    <!-- Popup Ad -->
+    <!-- Popup Ad Container -->
     <div class="popup-overlay" id="popup-ad" style="display: none;">
-        <div class="popup-content">
+        <div class="popup-content popup-3x4">
             <button class="popup-close" onclick="closePopup()">&times;</button>
-            <div class="popup-body">
-                <h3>🎉 โปรโมชั่นพิเศษ!</h3>
-                <p>สมัครวันนี้รับสิทธิพิเศษมากมาย</p>
-                <a href="#promotions" class="popup-btn" onclick="closePopup()">ดูโปรโมชั่น</a>
+            <div class="popup-carousel" id="popup-carousel">
+                <!-- Popups will be loaded dynamically -->
+            </div>
+            <div class="popup-nav" id="popup-nav" style="display: none;">
+                <button class="popup-nav-btn" onclick="prevPopup()">&larr;</button>
+                <span class="popup-indicator" id="popup-indicator">1/1</span>
+                <button class="popup-nav-btn" onclick="nextPopup()">&rarr;</button>
             </div>
             <div class="popup-footer">
                 <button class="popup-close-today" onclick="closePopupToday()">ปิดวันนี้ไม่ต้องแสดงอีก</button>
@@ -151,22 +154,85 @@
 
     <!-- Popup Script -->
     <script>
+        let popupData = [];
+        let currentPopupIndex = 0;
+
+        async function loadPopupAds() {
+            try {
+                popupData = await dbService.getPopups(true);
+                if (popupData.length > 0) {
+                    checkShowPopup();
+                }
+            } catch (error) {
+                console.error('Error loading popups:', error);
+            }
+        }
+
+        function renderPopups() {
+            const carousel = document.getElementById('popup-carousel');
+            const nav = document.getElementById('popup-nav');
+
+            if (popupData.length === 0) return;
+
+            carousel.innerHTML = popupData.map((popup, i) => {
+                if (popup.type === 'image' && popup.image) {
+                    return `<div class="popup-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+                        ${popup.link ? `<a href="${popup.link}" target="_blank">` : ''}
+                        <img src="${popup.image}" alt="${popup.title || 'Popup'}" class="popup-image">
+                        ${popup.link ? '</a>' : ''}
+                    </div>`;
+                } else {
+                    return `<div class="popup-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+                        <div class="popup-body">
+                            <h3>${popup.heading || 'โปรโมชั่นพิเศษ!'}</h3>
+                            <p>${popup.message || ''}</p>
+                            ${popup.link ? `<a href="${popup.link}" class="popup-btn" target="_blank">${popup.buttonText || 'ดูเพิ่มเติม'}</a>` : ''}
+                        </div>
+                    </div>`;
+                }
+            }).join('');
+
+            nav.style.display = popupData.length > 1 ? 'flex' : 'none';
+            updatePopupIndicator();
+        }
+
+        function updatePopupIndicator() {
+            document.getElementById('popup-indicator').textContent = `${currentPopupIndex + 1}/${popupData.length}`;
+            document.querySelectorAll('.popup-slide').forEach((slide, i) => {
+                slide.classList.toggle('active', i === currentPopupIndex);
+            });
+        }
+
+        function nextPopup() {
+            currentPopupIndex = (currentPopupIndex + 1) % popupData.length;
+            updatePopupIndicator();
+        }
+
+        function prevPopup() {
+            currentPopupIndex = (currentPopupIndex - 1 + popupData.length) % popupData.length;
+            updatePopupIndicator();
+        }
+
         function checkShowPopup() {
             const lastClosed = localStorage.getItem('popupClosedDate');
             const today = new Date().toDateString();
-            if (lastClosed !== today) {
+            if (lastClosed !== today && popupData.length > 0) {
+                renderPopups();
                 document.getElementById('popup-ad').style.display = 'flex';
             }
         }
+
         function closePopup() {
             document.getElementById('popup-ad').style.display = 'none';
         }
+
         function closePopupToday() {
             localStorage.setItem('popupClosedDate', new Date().toDateString());
             closePopup();
         }
-        // Show popup on load
-        window.addEventListener('load', checkShowPopup);
+
+        // Load popups on page load
+        window.addEventListener('load', loadPopupAds);
     </script>
 </body>
 

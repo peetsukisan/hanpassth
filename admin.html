@@ -55,6 +55,15 @@
                     </svg>
                     ขั้นตอนการใช้งาน
                 </a>
+                <a href="#" class="nav-item" data-tab="popups">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <path d="M8 12h8" />
+                        <path d="M12 8v8" />
+                    </svg>
+                    Popup โฆษณา
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <a href="index.html" class="nav-item">
@@ -125,10 +134,44 @@
                                 <th>ชื่อ</th>
                                 <th>คำอธิบาย</th>
                                 <th>สถานะ</th>
+                                <th>วันที่สร้าง</th>
                                 <th>การจัดการ</th>
                             </tr>
                         </thead>
                         <tbody id="guides-table-body">
+                            <tr class="loading-row">
+                                <td colspan="6">กำลังโหลด...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Popups Tab -->
+            <div class="tab-content" id="popups-tab">
+                <div class="content-header">
+                    <h1>จัดการ Popup โฆษณา</h1>
+                    <button class="btn btn-primary" onclick="openPopupModal()" id="add-popup-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        เพิ่ม Popup (สูงสุด 3)
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>ชื่อ/รูปแบบ</th>
+                                <th>สถานะ</th>
+                                <th>วันที่สร้าง</th>
+                                <th>การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="popups-table-body">
                             <tr class="loading-row">
                                 <td colspan="5">กำลังโหลด...</td>
                             </tr>
@@ -428,6 +471,88 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeGuideModal()">ยกเลิก</button>
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popup Ad Modal -->
+    <div class="modal" id="popup-modal">
+        <div class="modal-backdrop" onclick="closePopupModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="popup-modal-title">เพิ่ม Popup โฆษณา</h2>
+                <button class="modal-close" onclick="closePopupModal()">&times;</button>
+            </div>
+            <form id="popup-form" class="modal-body" onsubmit="savePopup(event)">
+                <input type="hidden" id="popup-id">
+
+                <div class="form-row">
+                    <div class="form-group" style="flex: 0 0 100px;">
+                        <label for="popup-order">ลำดับ *</label>
+                        <input type="number" id="popup-order" required min="1" max="3" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="popup-title">ชื่อ Popup</label>
+                        <input type="text" id="popup-title" placeholder="โปรโมชั่นพิเศษ">
+                    </div>
+                </div>
+
+                <!-- Popup Type -->
+                <div class="form-group">
+                    <label>รูปแบบ Popup</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="popup-type" id="popup-type-image" value="image" checked
+                                onchange="togglePopupType()">
+                            <span>รูปภาพ (แนะนำ ขนาด 3:4)</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="popup-type" id="popup-type-text" value="text"
+                                onchange="togglePopupType()">
+                            <span>ข้อความ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Image URL -->
+                <div class="form-group" id="popup-image-group">
+                    <label for="popup-image">URL รูปภาพ (ขนาด 3:4)</label>
+                    <input type="url" id="popup-image" placeholder="https://example.com/popup.jpg">
+                    <small class="form-hint">ขนาดแนะนำ: 600x800px หรือ 450x600px</small>
+                </div>
+
+                <!-- Text Content -->
+                <div id="popup-text-group" style="display: none;">
+                    <div class="form-group">
+                        <label for="popup-heading">หัวข้อ</label>
+                        <input type="text" id="popup-heading" placeholder="โปรโมชั่นพิเศษ!">
+                    </div>
+                    <div class="form-group">
+                        <label for="popup-message">ข้อความ</label>
+                        <textarea id="popup-message" rows="3" placeholder="รายละเอียดโปรโมชั่น..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="popup-button-text">ข้อความปุ่ม</label>
+                        <input type="text" id="popup-button-text" placeholder="ดูเพิ่มเติม" value="ดูเพิ่มเติม">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="popup-link">ลิ้งค์เมื่อคลิก (ไม่บังคับ)</label>
+                    <input type="url" id="popup-link" placeholder="https://example.com/promo">
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="popup-active" checked>
+                        <span>เปิดใช้งาน</span>
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closePopupModal()">ยกเลิก</button>
                     <button type="submit" class="btn btn-primary">บันทึก</button>
                 </div>
             </form>
