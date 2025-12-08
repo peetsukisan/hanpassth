@@ -191,24 +191,27 @@ body {
 
 .carousel-track {
     display: flex;
-    gap: 20px;
+    gap: 0;
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-wrap: nowrap;
 }
 
 .promo-card {
-    flex: 0 0 calc(33.333% - 14px);
-    min-width: 320px;
-    aspect-ratio: 1 / 1;
+    flex: 0 0 100%;
+    min-width: 100%;
+    aspect-ratio: 16 / 6;
+    min-height: 280px;
     border-radius: var(--radius-lg);
-    padding: 28px;
+    padding: 0;
     position: relative;
     overflow: hidden;
     cursor: pointer;
     transition: var(--transition);
+    display: flex;
+    align-items: center;
 }
 
 .promo-card:hover {
-    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
 

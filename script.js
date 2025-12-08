@@ -104,12 +104,11 @@ function renderPromotions() {
         return;
     }
 
+    // All cards are now emart banner style
     carousel.innerHTML = promotions.map(promo => {
-        const cardVisual = cardVisuals[promo.cardType] || '';
         const textClass = promo.textColor === 'dark' ? 'dark-text' : '';
         const badgeClass = promo.badgeStyle === 'light' ? 'light' : '';
         const isImageOnly = promo.displayMode === 'image-only';
-        const isBanner = promo.cardType === 'banner';
 
         // Build background style
         let bgStyle = '';
@@ -135,28 +134,14 @@ function renderPromotions() {
             `;
         }
 
-        // Banner mode (emart style)
-        if (isBanner) {
-            return `
-                <a href="promo-detail.html?id=${promo.id}" class="promo-card banner-card ${textClass}" style="${bgStyle}">
-                    <div class="banner-content">
-                        <span class="card-badge ${badgeClass}">${promo.badge || 'EVENT'}</span>
-                        <h3 class="card-title">${promo.title || ''}</h3>
-                        <p class="card-subtitle">${promo.subtitle || ''}</p>
-                        ${dateRange}
-                    </div>
-                </a>
-            `;
-        }
-
-        // Original card style
+        // All cards use emart banner style
         return `
-            <a href="promo-detail.html?id=${promo.id}" class="promo-card ${textClass}" style="${bgStyle}">
-                <span class="card-badge ${badgeClass}">${promo.badge || 'EVENT'}</span>
-                <h3 class="card-title">${promo.title || ''}<br>${promo.subtitle || ''}</h3>
-                ${dateRange}
-                <div class="card-image">
-                    ${cardVisual}
+            <a href="promo-detail.html?id=${promo.id}" class="promo-card banner-card ${textClass}" style="${bgStyle}">
+                <div class="banner-content">
+                    <span class="card-badge ${badgeClass}">${promo.badge || 'EVENT'}</span>
+                    <h3 class="card-title">${promo.title || ''}</h3>
+                    <p class="card-subtitle">${promo.subtitle || ''}</p>
+                    ${dateRange}
                 </div>
             </a>
         `;
@@ -167,6 +152,9 @@ function renderPromotions() {
     if (totalIndicator) {
         totalIndicator.textContent = promotions.length;
     }
+
+    // Re-init carousel after rendering
+    setTimeout(() => initCarousel(), 100);
 }
 
 // Format date for display (D.M format like emart)
@@ -224,30 +212,51 @@ function initCarousel() {
     const cards = document.querySelectorAll('.promo-card');
     const prevBtn = document.querySelector('.carousel-arrow.prev');
     const nextBtn = document.querySelector('.carousel-arrow.next');
-    const dots = document.querySelectorAll('.dot');
     const currentIndicator = document.querySelector('.page-indicator .current');
+    const totalIndicator = document.querySelector('.page-indicator .total');
+    const dotsContainer = document.querySelector('.dots');
 
     if (cards.length === 0) return;
 
-    cardsPerView = getCardsPerView();
+    // Clear previous interval
+    if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+    }
 
-    function getCardsPerView() {
-        if (window.innerWidth <= 768) return 1;
-        if (window.innerWidth <= 1024) return 2;
-        return 3;
+    // For banner mode, always 1 per view
+    cardsPerView = 1;
+
+    // Update total indicator
+    if (totalIndicator) {
+        totalIndicator.textContent = cards.length;
+    }
+
+    // Generate dots dynamically
+    if (dotsContainer) {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < cards.length; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'dot' + (i === 0 ? ' active' : '');
+            dot.addEventListener('click', () => {
+                currentIndex = i;
+                updateCarousel();
+            });
+            dotsContainer.appendChild(dot);
+        }
     }
 
     function updateCarousel() {
-        const cardWidth = cards[0]?.offsetWidth || 320;
-        const gap = 20;
-        const offset = currentIndex * (cardWidth + gap);
-        track.style.transform = `translateX(-${offset}px)`;
+        // For banner cards, move by percentage
+        const offset = currentIndex * 100;
+        track.style.transform = `translateX(-${offset}%)`;
 
         if (currentIndicator) {
             currentIndicator.textContent = currentIndex + 1;
         }
 
-        dots.forEach((dot, index) => {
+        // Update dots
+        const dots = dotsContainer?.querySelectorAll('.dot');
+        dots?.forEach((dot, index) => {
             dot.classList.toggle('active', index === currentIndex);
         });
     }
@@ -257,16 +266,13 @@ function initCarousel() {
         if (currentIndex >= cards.length) {
             currentIndex = 0;
         }
-        if (currentIndex > cards.length - cardsPerView) {
-            currentIndex = 0;
-        }
         updateCarousel();
     }
 
     function prevSlide() {
         currentIndex--;
         if (currentIndex < 0) {
-            currentIndex = Math.max(0, cards.length - cardsPerView);
+            currentIndex = cards.length - 1;
         }
         updateCarousel();
     }
@@ -274,15 +280,8 @@ function initCarousel() {
     if (nextBtn) nextBtn.addEventListener('click', nextSlide);
     if (prevBtn) prevBtn.addEventListener('click', prevSlide);
 
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            currentIndex = index;
-            updateCarousel();
-        });
-    });
-
-    // Auto-play
-    autoPlayInterval = setInterval(nextSlide, 5000);
+    // Auto-play every 4 seconds
+    autoPlayInterval = setInterval(nextSlide, 4000);
 
     const carouselContainer = document.querySelector('.carousel-container');
     if (carouselContainer) {
@@ -335,14 +334,33 @@ function initSearch() {
     const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
 
-    function handleSearch() {
+    async function handleSearch() {
         const query = searchInput?.value.trim().toLowerCase();
         if (!query) return;
 
-        if (query.includes('โปรโมชั่น') || query.includes('promo') || query.includes('event')) {
-            document.querySelector('#promotions')?.scrollIntoView({ behavior: 'smooth' });
-        } else if (query.includes('ขั้นตอน') || query.includes('how') || query.includes('ใช้งาน') || query.includes('guide')) {
-            document.querySelector('#how-to-use')?.scrollIntoView({ behavior: 'smooth' });
+        // Search in promotions
+        const matchedPromos = promotions.filter(p =>
+            (p.title && p.title.toLowerCase().includes(query)) ||
+            (p.subtitle && p.subtitle.toLowerCase().includes(query)) ||
+            (p.description && p.description.toLowerCase().includes(query))
+        );
+
+        // Search in guides
+        const matchedGuides = guides.filter(g =>
+            (g.title && g.title.toLowerCase().includes(query)) ||
+            (g.description && g.description.toLowerCase().includes(query))
+        );
+
+        // Show search results
+        if (matchedPromos.length > 0) {
+            // Go to first matched promo
+            window.location.href = `promo-detail.html?id=${matchedPromos[0].id}`;
+        } else if (matchedGuides.length > 0) {
+            // Go to first matched guide
+            window.location.href = `guide-detail.html?id=${matchedGuides[0].id}`;
+        } else {
+            // Show alert or scroll to sections
+            alert(`ไม่พบผลลัพธ์สำหรับ "${query}"`);
         }
     }
 
