@@ -532,3 +532,10 @@ function initStepAnimations() {
         observer.observe(card);
     });
 }
+
+// ==================== FAQ ====================
+
+function toggleFaq(button) {
+    const item = button.parentElement;
+    item.classList.toggle('active');
+}
