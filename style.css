@@ -860,7 +860,7 @@ a.step-card:hover .step-icon {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -868,65 +868,84 @@ a.step-card:hover .step-icon {
 }
 
 .popup-content {
+    position: relative;
     background: white;
-    border-radius: 16px;
-    max-width: 400px;
-    width: 90%;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
     animation: popupIn 0.3s ease;
+}
+
+.popup-3x4 {
+    width: 360px;
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 420px) {
+    .popup-3x4 {
+        width: 90vw;
+        height: calc(90vw * 4 / 3);
+        max-height: 85vh;
+    }
 }
 
 @keyframes popupIn {
     from {
         opacity: 0;
-        transform: scale(0.9);
+        transform: scale(0.9) translateY(20px);
     }
 
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateY(0);
     }
 }
 
 .popup-close {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.5);
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.6);
     border: none;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     cursor: pointer;
     color: white;
     z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
 }
 
-.popup-3x4 {
-    aspect-ratio: 3/4;
-    max-width: 350px;
-    max-height: 480px;
-    display: flex;
-    flex-direction: column;
+.popup-close:hover {
+    background: rgba(0, 0, 0, 0.8);
 }
 
 .popup-carousel {
     flex: 1;
     position: relative;
     overflow: hidden;
-    min-height: 300px;
+    background: #f0f0f0;
 }
 
 .popup-slide {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
 }
 
 .popup-slide.active {
-    display: block;
+    opacity: 1;
+    z-index: 1;
 }
 
 .popup-image {
@@ -935,29 +954,107 @@ a.step-card:hover .step-icon {
     object-fit: cover;
 }
 
+/* emart24-style Navigation Bar */
 .popup-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
-    padding: 10px;
-    background: #f5f5f5;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #333;
+    color: white;
 }
 
 .popup-nav-btn {
-    background: var(--primary-blue);
+    background: transparent;
     color: white;
     border: none;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.popup-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.popup-pause-btn {
+    margin-right: 8px;
 }
 
 .popup-indicator {
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    min-width: 30px;
+    text-align: center;
+}
+
+.popup-progress-bar {
+    flex: 1;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 0 10px;
+    max-width: 120px;
+}
+
+.popup-progress-fill {
+    height: 100%;
+    background: #ffcc00;
+    transition: width 0.3s ease;
+}
+
+.popup-total {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Popup Footer */
+.popup-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: white;
+    border-top: 1px solid #eee;
+}
+
+.popup-close-today {
+    background: none;
+    border: none;
     color: #666;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.popup-close-today:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+.popup-close-btn {
+    background: #333;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.popup-close-btn:hover {
+    background: #555;
 }
 
 .popup-body {

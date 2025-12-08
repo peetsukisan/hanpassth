@@ -126,9 +126,15 @@
                 <!-- Popups will be loaded dynamically -->
             </div>
             <div class="popup-nav" id="popup-nav" style="display: none;">
-                <button class="popup-nav-btn" onclick="prevPopup()">&larr;</button>
-                <span class="popup-indicator" id="popup-indicator">1/1</span>
-                <button class="popup-nav-btn" onclick="nextPopup()">&rarr;</button>
+                <button class="popup-nav-btn popup-pause-btn" onclick="togglePopupPause()"
+                    id="popup-pause-btn">⏸</button>
+                <button class="popup-nav-btn" onclick="prevPopup()">&lt;</button>
+                <button class="popup-nav-btn" onclick="nextPopup()">&gt;</button>
+                <span class="popup-indicator" id="popup-indicator">1</span>
+                <div class="popup-progress-bar">
+                    <div class="popup-progress-fill" id="popup-progress"></div>
+                </div>
+                <span class="popup-total" id="popup-total">3</span>
             </div>
             <div class="popup-footer">
                 <button class="popup-close-today" onclick="closePopupToday()">ปิดวันนี้ไม่ต้องแสดงอีก</button>
@@ -193,11 +199,37 @@
             }).join('');
 
             nav.style.display = popupData.length > 1 ? 'flex' : 'none';
+            document.getElementById('popup-total').textContent = popupData.length;
             updatePopupIndicator();
+            startAutoPlay();
+        }
+
+        let popupInterval = null;
+        let isPaused = false;
+
+        function startAutoPlay() {
+            if (popupInterval) clearInterval(popupInterval);
+            if (popupData.length > 1 && !isPaused) {
+                popupInterval = setInterval(() => {
+                    nextPopup();
+                }, 4000);
+            }
+        }
+
+        function togglePopupPause() {
+            isPaused = !isPaused;
+            document.getElementById('popup-pause-btn').textContent = isPaused ? '▶' : '⏸';
+            if (isPaused) {
+                clearInterval(popupInterval);
+            } else {
+                startAutoPlay();
+            }
         }
 
         function updatePopupIndicator() {
-            document.getElementById('popup-indicator').textContent = `${currentPopupIndex + 1}/${popupData.length}`;
+            document.getElementById('popup-indicator').textContent = currentPopupIndex + 1;
+            const progress = ((currentPopupIndex + 1) / popupData.length) * 100;
+            document.getElementById('popup-progress').style.width = progress + '%';
             document.querySelectorAll('.popup-slide').forEach((slide, i) => {
                 slide.classList.toggle('active', i === currentPopupIndex);
             });
@@ -224,6 +256,7 @@
 
         function closePopup() {
             document.getElementById('popup-ad').style.display = 'none';
+            if (popupInterval) clearInterval(popupInterval);
         }
 
         function closePopupToday() {
