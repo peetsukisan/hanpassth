@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายละเอียดโปรโมชั่น</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="detail.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="#2B4ACF" stroke-width="3" />
+                        <path d="M12 20C12 15.5817 15.5817 12 20 12C24.4183 12 28 15.5817 28 20" stroke="#2B4ACF"
+                            stroke-width="3" stroke-linecap="round" />
+                        <circle cx="20" cy="20" r="4" fill="#2B4ACF" />
+                    </svg>
+                </div>
+                <span class="logo-text">MyBrand</span>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="index.html#promotions" class="nav-link active">โปรโมชั่น</a>
+                <a href="index.html#how-to-use" class="nav-link">ขั้นตอนการใช้งาน</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+        <div class="breadcrumb-container">
+            <a href="index.html">หน้าหลัก</a>
+            <span class="separator">/</span>
+            <a href="index.html#promotions">โปรโมชั่น</a>
+            <span class="separator">/</span>
+            <span id="breadcrumb-title">รายละเอียด</span>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <section class="detail-hero" id="detail-hero">
+        <div class="hero-content">
+            <span class="hero-badge" id="hero-badge">EVENT</span>
+            <h1 class="hero-title" id="hero-title">กำลังโหลด...</h1>
+            <p class="hero-subtitle" id="hero-subtitle"></p>
+            <p class="hero-period" id="hero-period"></p>
+        </div>
+    </section>
+
+    <!-- Detail Content -->
+    <main class="detail-content">
+        <div class="detail-container">
+            <!-- Main Description -->
+            <div class="detail-section" id="description-section">
+                <h2 class="section-title">รายละเอียด</h2>
+                <div class="section-content" id="description-content">
+                    <p>กำลังโหลดข้อมูล...</p>
+                </div>
+            </div>
+
+            <!-- Dynamic Sections -->
+            <div id="dynamic-sections"></div>
+
+            <!-- Action Buttons -->
+            <div class="action-section" id="action-section" style="display: none;">
+                <a href="#" class="btn-action primary" id="action-btn">สมัครเลย</a>
+                <a href="index.html#promotions" class="btn-action secondary">ดูโปรโมชั่นอื่นๆ</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2024 MyBrand. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="db-service.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get promotion ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const promoId = urlParams.get('id');
+
+            if (!promoId) {
+                document.getElementById('hero-title').textContent = 'ไม่พบโปรโมชั่น';
+                return;
+            }
+
+            try {
+                const promo = await dbService.getPromotion(promoId);
+
+                if (!promo) {
+                    document.getElementById('hero-title').textContent = 'ไม่พบโปรโมชั่น';
+                    return;
+                }
+
+                // Update page title
+                document.title = promo.title + ' - MyBrand';
+
+                // Update breadcrumb
+                document.getElementById('breadcrumb-title').textContent = promo.title;
+
+                // Update hero
+                const hero = document.getElementById('detail-hero');
+                hero.style.background = promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+
+                document.getElementById('hero-badge').textContent = promo.badge || 'EVENT';
+                document.getElementById('hero-title').textContent = promo.title;
+                document.getElementById('hero-subtitle').textContent = promo.subtitle || '';
+
+                // Date period
+                if (promo.startDate || promo.endDate) {
+                    const period = `${promo.startDate || ''} ~ ${promo.endDate || ''}`;
+                    document.getElementById('hero-period').textContent = period;
+                }
+
+                // Text color
+                if (promo.textColor === 'dark') {
+                    hero.classList.add('dark-text');
+                }
+
+                // Description
+                if (promo.description) {
+                    document.getElementById('description-content').innerHTML = `<p>${promo.description}</p>`;
+                } else {
+                    document.getElementById('description-section').style.display = 'none';
+                }
+
+                // Dynamic sections
+                if (promo.sections && promo.sections.length > 0) {
+                    const sectionsContainer = document.getElementById('dynamic-sections');
+                    sectionsContainer.innerHTML = promo.sections.map(section => `
+                        <div class="detail-section">
+                            <h2 class="section-title">${section.title || ''}</h2>
+                            <div class="section-content">
+                                <p>${section.content || ''}</p>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Show action section
+                document.getElementById('action-section').style.display = 'flex';
+
+            } catch (error) {
+                console.error('Error loading promotion:', error);
+                document.getElementById('hero-title').textContent = 'เกิดข้อผิดพลาด';
+            }
+        });
+    </script>
+</body>
+
+</html>
