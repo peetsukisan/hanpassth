@@ -79,11 +79,15 @@
                         <path d="m15 18-6-6 6-6" />
                     </svg>
                 </button>
-                <div class="carousel-dots">
-                    <button class="dot active" aria-label="Slide 1"></button>
-                    <span class="page-indicator"><span class="current">1</span> / <span class="total">3</span></span>
-                    <button class="dot" aria-label="Slide 2"></button>
+
+                <div class="carousel-progress">
+                    <div class="dots" id="carousel-dots"></div>
+                    <span class="page-indicator"><span class="current">1</span> / <span class="total">1</span></span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
                 </div>
+
                 <button class="carousel-arrow next" aria-label="Next">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

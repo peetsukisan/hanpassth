@@ -214,7 +214,8 @@ function initCarousel() {
     const nextBtn = document.querySelector('.carousel-arrow.next');
     const currentIndicator = document.querySelector('.page-indicator .current');
     const totalIndicator = document.querySelector('.page-indicator .total');
-    const dotsContainer = document.querySelector('.dots');
+    const dotsContainer = document.getElementById('carousel-dots');
+    const progressFill = document.getElementById('progress-fill');
 
     if (cards.length === 0) return;
 
@@ -225,6 +226,7 @@ function initCarousel() {
 
     // For banner mode, always 1 per view
     cardsPerView = 1;
+    currentIndex = 0;
 
     // Update total indicator
     if (totalIndicator) {
@@ -238,8 +240,7 @@ function initCarousel() {
             const dot = document.createElement('span');
             dot.className = 'dot' + (i === 0 ? ' active' : '');
             dot.addEventListener('click', () => {
-                currentIndex = i;
-                updateCarousel();
+                goToSlide(i);
             });
             dotsContainer.appendChild(dot);
         }
@@ -261,6 +262,39 @@ function initCarousel() {
         });
     }
 
+    // Reset and restart progress animation
+    function resetProgress() {
+        if (progressFill) {
+            progressFill.classList.remove('animating');
+            // Force reflow
+            void progressFill.offsetWidth;
+            progressFill.classList.add('animating');
+        }
+    }
+
+    // Start auto-play with progress bar
+    function startAutoPlay() {
+        // Clear existing interval
+        if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+        }
+
+        // Start progress animation
+        resetProgress();
+
+        // Auto-slide every 4 seconds
+        autoPlayInterval = setInterval(() => {
+            nextSlide();
+            resetProgress();
+        }, 4000);
+    }
+
+    function goToSlide(index) {
+        currentIndex = index;
+        updateCarousel();
+        startAutoPlay(); // Reset timer
+    }
+
     function nextSlide() {
         currentIndex++;
         if (currentIndex >= cards.length) {
@@ -277,20 +311,35 @@ function initCarousel() {
         updateCarousel();
     }
 
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    // Button clicks reset timer
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            startAutoPlay(); // Reset timer
+        });
+    }
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            startAutoPlay(); // Reset timer
+        });
+    }
 
-    // Auto-play every 4 seconds
-    autoPlayInterval = setInterval(nextSlide, 4000);
-
+    // Pause on hover
     const carouselContainer = document.querySelector('.carousel-container');
     if (carouselContainer) {
         carouselContainer.addEventListener('mouseenter', () => {
             clearInterval(autoPlayInterval);
+            if (progressFill) {
+                progressFill.style.animationPlayState = 'paused';
+            }
         });
 
         carouselContainer.addEventListener('mouseleave', () => {
-            autoPlayInterval = setInterval(nextSlide, 5000);
+            if (progressFill) {
+                progressFill.style.animationPlayState = 'running';
+            }
+            startAutoPlay();
         });
     }
 
@@ -306,6 +355,9 @@ function initCarousel() {
     });
 
     updateCarousel();
+
+    // Start auto-play on init
+    startAutoPlay();
 }
 
 // ==================== SMOOTH SCROLL ====================

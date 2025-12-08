@@ -438,10 +438,19 @@ body {
     background: rgba(43, 74, 207, 0.05);
 }
 
-.carousel-dots {
+/* Progress Container */
+.carousel-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 200px;
+}
+
+.carousel-progress .dots {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .dot {
@@ -469,7 +478,38 @@ body {
 
 .page-indicator .current {
     font-weight: 600;
-    color: var(--text-dark);
+    color: var(--primary-blue);
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue-light));
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+.progress-fill.animating {
+    animation: progressFill 4s linear forwards;
+}
+
+@keyframes progressFill {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
 }
 
 /* ===== How to Use Section ===== */
