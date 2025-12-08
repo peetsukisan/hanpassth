@@ -173,6 +173,79 @@ body {
     transform: scale(1.05);
 }
 
+/* Search Dropdown */
+.search-box {
+    position: relative;
+}
+
+.search-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.search-category {
+    padding: 10px 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    background: var(--bg-light);
+    border-top: 1px solid var(--border-color);
+}
+
+.search-category:first-child {
+    border-top: none;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: var(--transition);
+}
+
+.search-result-item:hover {
+    background: rgba(43, 74, 207, 0.05);
+}
+
+.result-icon {
+    font-size: 1.5rem;
+}
+
+.result-text {
+    flex: 1;
+}
+
+.result-text strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.result-text small {
+    color: var(--text-gray);
+    font-size: 0.8rem;
+}
+
+.search-no-result {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-gray);
+}
+
 /* ===== Carousel Section ===== */
 .carousel-section {
     padding: 20px 24px 60px;
@@ -438,62 +511,67 @@ body {
     background: rgba(43, 74, 207, 0.05);
 }
 
-/* Progress Container */
-.carousel-progress {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    min-width: 200px;
-}
-
-.carousel-progress .dots {
+/* emart24 Style Carousel Controls */
+.carousel-controls-emart {
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 12px 20px;
+    background: var(--bg-white);
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    margin: 20px auto 0;
 }
 
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border-color);
+.control-btn {
+    width: 32px;
+    height: 32px;
     border: none;
+    background: transparent;
     cursor: pointer;
-    transition: var(--transition);
-}
-
-.dot.active {
-    background: var(--primary-blue);
-    width: 10px;
-    height: 10px;
-}
-
-.page-indicator {
-    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-gray);
-    min-width: 50px;
+    transition: var(--transition);
+    border-radius: 50%;
+}
+
+.control-btn:hover {
+    color: var(--text-dark);
+    background: var(--bg-light);
+}
+
+.page-num {
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-width: 24px;
     text-align: center;
 }
 
-.page-indicator .current {
+.page-num.current {
+    color: #D4A017;
     font-weight: 600;
-    color: var(--primary-blue);
 }
 
-/* Progress Bar */
-.progress-bar {
-    width: 100%;
+.page-num.total {
+    color: var(--text-gray);
+}
+
+.progress-track {
+    width: 100px;
     height: 3px;
     background: var(--border-color);
     border-radius: 3px;
     overflow: hidden;
+    margin: 0 4px;
 }
 
 .progress-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue-light));
+    background: #D4A017;
     border-radius: 3px;
     transition: width 0.1s linear;
 }
@@ -511,6 +589,7 @@ body {
         width: 100%;
     }
 }
+
 
 /* ===== How to Use Section ===== */
 .how-to-section {

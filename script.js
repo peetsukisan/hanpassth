@@ -210,11 +210,13 @@ function renderGuides() {
 function initCarousel() {
     const track = document.querySelector('.carousel-track');
     const cards = document.querySelectorAll('.promo-card');
-    const prevBtn = document.querySelector('.carousel-arrow.prev');
-    const nextBtn = document.querySelector('.carousel-arrow.next');
-    const currentIndicator = document.querySelector('.page-indicator .current');
-    const totalIndicator = document.querySelector('.page-indicator .total');
-    const dotsContainer = document.getElementById('carousel-dots');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const pauseIcon = document.getElementById('pause-icon');
+    const playIcon = document.getElementById('play-icon');
+    const currentIndicator = document.getElementById('page-current');
+    const totalIndicator = document.getElementById('page-total');
     const progressFill = document.getElementById('progress-fill');
 
     if (cards.length === 0) return;
@@ -224,26 +226,14 @@ function initCarousel() {
         clearInterval(autoPlayInterval);
     }
 
-    // For banner mode, always 1 per view
+    // State
+    let isPaused = false;
     cardsPerView = 1;
     currentIndex = 0;
 
     // Update total indicator
     if (totalIndicator) {
         totalIndicator.textContent = cards.length;
-    }
-
-    // Generate dots dynamically
-    if (dotsContainer) {
-        dotsContainer.innerHTML = '';
-        for (let i = 0; i < cards.length; i++) {
-            const dot = document.createElement('span');
-            dot.className = 'dot' + (i === 0 ? ' active' : '');
-            dot.addEventListener('click', () => {
-                goToSlide(i);
-            });
-            dotsContainer.appendChild(dot);
-        }
     }
 
     function updateCarousel() {
@@ -254,45 +244,50 @@ function initCarousel() {
         if (currentIndicator) {
             currentIndicator.textContent = currentIndex + 1;
         }
-
-        // Update dots
-        const dots = dotsContainer?.querySelectorAll('.dot');
-        dots?.forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentIndex);
-        });
     }
 
     // Reset and restart progress animation
     function resetProgress() {
         if (progressFill) {
             progressFill.classList.remove('animating');
-            // Force reflow
             void progressFill.offsetWidth;
             progressFill.classList.add('animating');
         }
     }
 
+    // Stop progress animation
+    function stopProgress() {
+        if (progressFill) {
+            progressFill.classList.remove('animating');
+            progressFill.style.width = '0%';
+        }
+    }
+
     // Start auto-play with progress bar
     function startAutoPlay() {
-        // Clear existing interval
+        if (isPaused) return;
+
         if (autoPlayInterval) {
             clearInterval(autoPlayInterval);
         }
 
-        // Start progress animation
         resetProgress();
 
-        // Auto-slide every 4 seconds
         autoPlayInterval = setInterval(() => {
             nextSlide();
             resetProgress();
         }, 4000);
     }
 
+    function stopAutoPlay() {
+        clearInterval(autoPlayInterval);
+        stopProgress();
+    }
+
     function goToSlide(index) {
         currentIndex = index;
         updateCarousel();
-        startAutoPlay(); // Reset timer
+        if (!isPaused) startAutoPlay();
     }
 
     function nextSlide() {
@@ -311,35 +306,33 @@ function initCarousel() {
         updateCarousel();
     }
 
-    // Button clicks reset timer
+    // Pause/Play button
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            if (isPaused) {
+                stopAutoPlay();
+                if (pauseIcon) pauseIcon.style.display = 'none';
+                if (playIcon) playIcon.style.display = 'block';
+            } else {
+                if (pauseIcon) pauseIcon.style.display = 'block';
+                if (playIcon) playIcon.style.display = 'none';
+                startAutoPlay();
+            }
+        });
+    }
+
+    // Arrow button clicks
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             nextSlide();
-            startAutoPlay(); // Reset timer
+            if (!isPaused) startAutoPlay();
         });
     }
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
             prevSlide();
-            startAutoPlay(); // Reset timer
-        });
-    }
-
-    // Pause on hover
-    const carouselContainer = document.querySelector('.carousel-container');
-    if (carouselContainer) {
-        carouselContainer.addEventListener('mouseenter', () => {
-            clearInterval(autoPlayInterval);
-            if (progressFill) {
-                progressFill.style.animationPlayState = 'paused';
-            }
-        });
-
-        carouselContainer.addEventListener('mouseleave', () => {
-            if (progressFill) {
-                progressFill.style.animationPlayState = 'running';
-            }
-            startAutoPlay();
+            if (!isPaused) startAutoPlay();
         });
     }
 
@@ -385,45 +378,101 @@ function initSmoothScroll() {
 function initSearch() {
     const searchInput = document.querySelector('.search-input');
     const searchBtn = document.querySelector('.search-btn');
+    const searchBox = document.querySelector('.search-box');
 
-    async function handleSearch() {
-        const query = searchInput?.value.trim().toLowerCase();
-        if (!query) return;
+    // Create dropdown container
+    let dropdown = document.createElement('div');
+    dropdown.className = 'search-dropdown';
+    dropdown.id = 'search-dropdown';
+    searchBox?.appendChild(dropdown);
+
+    function showResults(query) {
+        if (!query || query.length < 1) {
+            dropdown.style.display = 'none';
+            return;
+        }
+
+        const q = query.toLowerCase();
 
         // Search in promotions
         const matchedPromos = promotions.filter(p =>
-            (p.title && p.title.toLowerCase().includes(query)) ||
-            (p.subtitle && p.subtitle.toLowerCase().includes(query)) ||
-            (p.description && p.description.toLowerCase().includes(query))
-        );
+            (p.title && p.title.toLowerCase().includes(q)) ||
+            (p.subtitle && p.subtitle.toLowerCase().includes(q))
+        ).slice(0, 3); // Max 3 results
 
         // Search in guides
         const matchedGuides = guides.filter(g =>
-            (g.title && g.title.toLowerCase().includes(query)) ||
-            (g.description && g.description.toLowerCase().includes(query))
-        );
+            (g.title && g.title.toLowerCase().includes(q)) ||
+            (g.description && g.description.toLowerCase().includes(q))
+        ).slice(0, 3); // Max 3 results
 
-        // Show search results
+        // Build dropdown HTML
+        let html = '';
+
         if (matchedPromos.length > 0) {
-            // Go to first matched promo
-            window.location.href = `promo-detail.html?id=${matchedPromos[0].id}`;
-        } else if (matchedGuides.length > 0) {
-            // Go to first matched guide
-            window.location.href = `guide-detail.html?id=${matchedGuides[0].id}`;
-        } else {
-            // Show alert or scroll to sections
-            alert(`ไม่พบผลลัพธ์สำหรับ "${query}"`);
+            html += '<div class="search-category">โปรโมชั่น</div>';
+            matchedPromos.forEach(p => {
+                html += `
+                    <a href="promo-detail.html?id=${p.id}" class="search-result-item">
+                        <span class="result-icon">🎉</span>
+                        <div class="result-text">
+                            <strong>${p.title}</strong>
+                            <small>${p.subtitle || ''}</small>
+                        </div>
+                    </a>
+                `;
+            });
         }
+
+        if (matchedGuides.length > 0) {
+            html += '<div class="search-category">ขั้นตอนการใช้งาน</div>';
+            matchedGuides.forEach(g => {
+                html += `
+                    <a href="guide-detail.html?id=${g.id}" class="search-result-item">
+                        <span class="result-icon">📖</span>
+                        <div class="result-text">
+                            <strong>${g.title}</strong>
+                            <small>${g.description || ''}</small>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+
+        if (html === '') {
+            html = '<div class="search-no-result">ไม่พบผลลัพธ์สำหรับ "' + query + '"</div>';
+        }
+
+        dropdown.innerHTML = html;
+        dropdown.style.display = 'block';
     }
 
-    if (searchBtn) {
-        searchBtn.addEventListener('click', handleSearch);
-    }
-
+    // Live search on typing
     if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleSearch();
+        searchInput.addEventListener('input', (e) => {
+            showResults(e.target.value.trim());
+        });
+
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.trim()) {
+                showResults(searchInput.value.trim());
+            }
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!searchBox?.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+
+    // Search button click
+    if (searchBtn) {
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput?.value.trim();
+            if (query) {
+                showResults(query);
             }
         });
     }
