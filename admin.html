@@ -167,14 +167,51 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Background Type Selection -->
                 <div class="form-group">
+                    <label>พื้นหลัง</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="bg-type" id="bg-type-color" value="color" checked
+                                onchange="toggleBgType()">
+                            <span>สีพื้น/Gradient</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="bg-type" id="bg-type-image" value="image"
+                                onchange="toggleBgType()">
+                            <span>รูปภาพ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Color Background -->
+                <div class="form-group" id="bg-color-group">
                     <label for="promo-bg">สีพื้นหลัง (CSS Gradient)</label>
                     <input type="text" id="promo-bg" placeholder="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
                 </div>
+
+                <!-- Image Background -->
+                <div class="form-group" id="bg-image-group" style="display: none;">
+                    <label for="promo-bg-image">URL รูปภาพพื้นหลัง</label>
+                    <input type="text" id="promo-bg-image" placeholder="https://example.com/image.jpg">
+                    <small class="form-hint">ใช้ URL จาก Imgur, Google Drive, หรือ CDN อื่นๆ</small>
+                </div>
+
+                <!-- Display Mode -->
+                <div class="form-group">
+                    <label for="promo-display-mode">รูปแบบการแสดงผล</label>
+                    <select id="promo-display-mode">
+                        <option value="text-overlay">แสดงข้อความบนรูป/พื้นหลัง</option>
+                        <option value="image-only">แสดงรูปอย่างเดียว (ไม่มีข้อความ)</option>
+                    </select>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="promo-card-type">ประเภทการ์ด</label>
                         <select id="promo-card-type">
+                            <option value="banner">Banner (แบบ emart)</option>
                             <option value="credit-card">Credit Card</option>
                             <option value="bonus">Bonus</option>
                             <option value="lifestyle">Lifestyle</option>

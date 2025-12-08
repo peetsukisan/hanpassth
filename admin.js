@@ -96,6 +96,10 @@ function openPromoModal(promoData = null) {
     form.reset();
     document.getElementById('promo-sections').innerHTML = '';
 
+    // Reset background type
+    document.getElementById('bg-type-color').checked = true;
+    toggleBgType();
+
     if (promoData) {
         title.textContent = 'แก้ไขโปรโมชั่น';
         document.getElementById('promo-id').value = promoData.id;
@@ -104,12 +108,20 @@ function openPromoModal(promoData = null) {
         document.getElementById('promo-badge').value = promoData.badge || '';
         document.getElementById('promo-badge-style').value = promoData.badgeStyle || 'default';
         document.getElementById('promo-bg').value = promoData.backgroundColor || '';
-        document.getElementById('promo-card-type').value = promoData.cardType || 'credit-card';
+        document.getElementById('promo-bg-image').value = promoData.backgroundImage || '';
+        document.getElementById('promo-display-mode').value = promoData.displayMode || 'text-overlay';
+        document.getElementById('promo-card-type').value = promoData.cardType || 'banner';
         document.getElementById('promo-text-color').value = promoData.textColor || 'light';
         document.getElementById('promo-description').value = promoData.description || '';
         document.getElementById('promo-start-date').value = promoData.startDate || '';
         document.getElementById('promo-end-date').value = promoData.endDate || '';
         document.getElementById('promo-active').checked = promoData.isActive !== false;
+
+        // Set background type
+        if (promoData.backgroundImage) {
+            document.getElementById('bg-type-image').checked = true;
+            toggleBgType();
+        }
 
         // Load sections
         if (promoData.sections && promoData.sections.length > 0) {
@@ -119,9 +131,17 @@ function openPromoModal(promoData = null) {
         title.textContent = 'เพิ่มโปรโมชั่น';
         document.getElementById('promo-id').value = '';
         document.getElementById('promo-active').checked = true;
+        document.getElementById('promo-card-type').value = 'banner';
     }
 
     modal.classList.add('active');
+}
+
+// Toggle background type (color vs image)
+function toggleBgType() {
+    const isImage = document.getElementById('bg-type-image').checked;
+    document.getElementById('bg-color-group').style.display = isImage ? 'none' : 'block';
+    document.getElementById('bg-image-group').style.display = isImage ? 'block' : 'none';
 }
 
 function closePromoModal() {
@@ -146,6 +166,7 @@ async function savePromotion(e) {
     e.preventDefault();
 
     const id = document.getElementById('promo-id').value;
+    const isImageBg = document.getElementById('bg-type-image').checked;
 
     // Collect sections
     const sectionsElements = document.querySelectorAll('#promo-sections .section-item');
@@ -159,7 +180,9 @@ async function savePromotion(e) {
         subtitle: document.getElementById('promo-subtitle').value,
         badge: document.getElementById('promo-badge').value || 'EVENT',
         badgeStyle: document.getElementById('promo-badge-style').value,
-        backgroundColor: document.getElementById('promo-bg').value || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+        backgroundColor: isImageBg ? '' : (document.getElementById('promo-bg').value || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'),
+        backgroundImage: isImageBg ? document.getElementById('promo-bg-image').value : '',
+        displayMode: document.getElementById('promo-display-mode').value,
         cardType: document.getElementById('promo-card-type').value,
         textColor: document.getElementById('promo-text-color').value,
         description: document.getElementById('promo-description').value,
@@ -406,3 +429,4 @@ window.addGuideStep = addGuideStep;
 window.saveGuide = saveGuide;
 window.editGuide = editGuide;
 window.deleteGuide = deleteGuide;
+window.toggleBgType = toggleBgType;

@@ -212,6 +212,56 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
+/* Banner Card (emart style) */
+.promo-card.banner-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+    aspect-ratio: 16 / 6;
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+}
+
+.promo-card.banner-card.image-only {
+    padding: 0;
+}
+
+.banner-content {
+    max-width: 50%;
+    padding-left: 40px;
+}
+
+.banner-content .card-badge {
+    margin-bottom: 12px;
+}
+
+.banner-content .card-title {
+    font-size: 1.8rem;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.banner-content .card-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+}
+
+.promo-card.dark-text .banner-content .card-subtitle {
+    color: var(--text-gray);
+}
+
+.card-date {
+    display: block;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-top: 12px;
+}
+
+.promo-card.dark-text .card-date {
+    color: var(--text-gray);
+}
+
 .card-badge {
     display: inline-block;
     background: rgba(255, 255, 255, 0.2);
@@ -237,7 +287,8 @@ body {
     margin-bottom: 20px;
 }
 
-.card-title.dark-text {
+.card-title.dark-text,
+.promo-card.dark-text .card-title {
     color: var(--text-dark);
 }
 
@@ -247,6 +298,7 @@ body {
     right: 24px;
     left: 24px;
 }
+
 
 .card-visual {
     display: flex;

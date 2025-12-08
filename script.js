@@ -105,14 +105,56 @@ function renderPromotions() {
     }
 
     carousel.innerHTML = promotions.map(promo => {
-        const cardVisual = cardVisuals[promo.cardType] || cardVisuals['credit-card'];
+        const cardVisual = cardVisuals[promo.cardType] || '';
         const textClass = promo.textColor === 'dark' ? 'dark-text' : '';
         const badgeClass = promo.badgeStyle === 'light' ? 'light' : '';
+        const isImageOnly = promo.displayMode === 'image-only';
+        const isBanner = promo.cardType === 'banner';
 
+        // Build background style
+        let bgStyle = '';
+        if (promo.backgroundImage) {
+            bgStyle = `background-image: url('${promo.backgroundImage}'); background-size: cover; background-position: center;`;
+        } else {
+            bgStyle = `background: ${promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'};`;
+        }
+
+        // Format date range
+        let dateRange = '';
+        if (promo.startDate || promo.endDate) {
+            const start = promo.startDate ? formatDisplayDate(promo.startDate) : '';
+            const end = promo.endDate ? formatDisplayDate(promo.endDate) : '';
+            dateRange = `<span class="card-date">행사기간 | ${start} ~ ${end}</span>`;
+        }
+
+        // Image-only mode
+        if (isImageOnly && promo.backgroundImage) {
+            return `
+                <a href="promo-detail.html?id=${promo.id}" class="promo-card banner-card image-only" style="${bgStyle}">
+                </a>
+            `;
+        }
+
+        // Banner mode (emart style)
+        if (isBanner) {
+            return `
+                <a href="promo-detail.html?id=${promo.id}" class="promo-card banner-card ${textClass}" style="${bgStyle}">
+                    <div class="banner-content">
+                        <span class="card-badge ${badgeClass}">${promo.badge || 'EVENT'}</span>
+                        <h3 class="card-title">${promo.title || ''}</h3>
+                        <p class="card-subtitle">${promo.subtitle || ''}</p>
+                        ${dateRange}
+                    </div>
+                </a>
+            `;
+        }
+
+        // Original card style
         return `
-            <a href="promo-detail.html?id=${promo.id}" class="promo-card" style="background: ${promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'};">
+            <a href="promo-detail.html?id=${promo.id}" class="promo-card ${textClass}" style="${bgStyle}">
                 <span class="card-badge ${badgeClass}">${promo.badge || 'EVENT'}</span>
-                <h3 class="card-title ${textClass}">${promo.title || ''}<br>${promo.subtitle || ''}</h3>
+                <h3 class="card-title">${promo.title || ''}<br>${promo.subtitle || ''}</h3>
+                ${dateRange}
                 <div class="card-image">
                     ${cardVisual}
                 </div>
@@ -124,6 +166,17 @@ function renderPromotions() {
     const totalIndicator = document.querySelector('.page-indicator .total');
     if (totalIndicator) {
         totalIndicator.textContent = promotions.length;
+    }
+}
+
+// Format date for display (D.M format like emart)
+function formatDisplayDate(dateStr) {
+    if (!dateStr) return '';
+    try {
+        const date = new Date(dateStr);
+        return `${date.getMonth() + 1}.${date.getDate()}`;
+    } catch (e) {
+        return dateStr;
     }
 }
 
