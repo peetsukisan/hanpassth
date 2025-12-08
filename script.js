@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load data from Firebase
     await loadPromotions();
     await loadGuides();
+    await loadFaqs();
 
     // Initialize carousel
     initCarousel();
@@ -87,6 +88,58 @@ async function loadGuides() {
                 <p>ไม่สามารถโหลดข้อมูลได้ กรุณารีเฟรชหน้า</p>
             </div>
         `;
+    }
+}
+
+async function loadFaqs() {
+    try {
+        const faqs = await dbService.getFaqs(true); // Only active
+        renderFaqs(faqs);
+    } catch (error) {
+        console.error('Error loading FAQs:', error);
+        const faqList = document.getElementById('faq-list');
+        if (faqList) {
+            faqList.innerHTML = `
+                <div class="loading-placeholder error">
+                    <p>ไม่สามารถโหลด FAQ ได้ กรุณารีเฟรชหน้า</p>
+                </div>
+            `;
+        }
+    }
+}
+
+function renderFaqs(faqs) {
+    const faqList = document.getElementById('faq-list');
+    if (!faqList) return;
+
+    if (faqs.length === 0) {
+        faqList.innerHTML = `
+            <div class="loading-placeholder">
+                <p>ยังไม่มี FAQ</p>
+            </div>
+        `;
+        return;
+    }
+
+    faqList.innerHTML = faqs.map((faq, index) => `
+        <div class="faq-item" id="faq-${index}">
+            <button class="faq-question" onclick="toggleFaq(${index})">
+                <span>${faq.question}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m6 9 6 6 6-6"/>
+                </svg>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-content">${faq.answer}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleFaq(index) {
+    const faqItem = document.getElementById(`faq-${index}`);
+    if (faqItem) {
+        faqItem.classList.toggle('active');
     }
 }
 

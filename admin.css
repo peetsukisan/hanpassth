@@ -663,6 +663,19 @@ form {
     background: var(--danger-red);
 }
 
+/* ===== FAQ Table Styles ===== */
+#faq-table-body td:nth-child(2),
+#faq-table-body td:nth-child(3) {
+    text-align: left;
+}
+
+#faq-table-body td:nth-child(3) {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .sidebar {
