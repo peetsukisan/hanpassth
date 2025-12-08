@@ -97,9 +97,9 @@ async function loadFaqs() {
         renderFaqs(faqs);
     } catch (error) {
         console.error('Error loading FAQs:', error);
-        const faqList = document.getElementById('faq-list');
-        if (faqList) {
-            faqList.innerHTML = `
+        const faqGrid = document.getElementById('faq-grid');
+        if (faqGrid) {
+            faqGrid.innerHTML = `
                 <div class="loading-placeholder error">
                     <p>ไม่สามารถโหลด FAQ ได้ กรุณารีเฟรชหน้า</p>
                 </div>
@@ -109,11 +109,11 @@ async function loadFaqs() {
 }
 
 function renderFaqs(faqs) {
-    const faqList = document.getElementById('faq-list');
-    if (!faqList) return;
+    const faqGrid = document.getElementById('faq-grid');
+    if (!faqGrid) return;
 
     if (faqs.length === 0) {
-        faqList.innerHTML = `
+        faqGrid.innerHTML = `
             <div class="loading-placeholder">
                 <p>ยังไม่มี FAQ</p>
             </div>
@@ -121,7 +121,7 @@ function renderFaqs(faqs) {
         return;
     }
 
-    faqList.innerHTML = faqs.map((faq, index) => `
+    faqGrid.innerHTML = faqs.map((faq, index) => `
         <div class="faq-item" id="faq-${index}">
             <button class="faq-question" onclick="toggleFaq(${index})">
                 <span>${faq.question}</span>

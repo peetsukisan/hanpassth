@@ -1324,7 +1324,7 @@ a.step-card:hover .step-icon {
     background: var(--bg-light);
 }
 
-.faq-list {
+.faq-grid {
     max-width: 800px;
     margin: 0 auto;
     display: flex;
