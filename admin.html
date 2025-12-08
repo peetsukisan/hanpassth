@@ -64,6 +64,15 @@
                     </svg>
                     Popup โฆษณา
                 </a>
+                <a href="#" class="nav-item" data-tab="faq">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <path d="M12 17h.01" />
+                    </svg>
+                    FAQ
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <a href="index.html" class="nav-item">
@@ -174,6 +183,38 @@
                         <tbody id="popups-table-body">
                             <tr class="loading-row">
                                 <td colspan="5">กำลังโหลด...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FAQ Tab -->
+            <div class="tab-content" id="faq-tab">
+                <div class="content-header">
+                    <h1>จัดการ FAQ</h1>
+                    <button class="btn btn-primary" onclick="openFaqModal()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        เพิ่ม FAQ
+                    </button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>คำถาม</th>
+                                <th>สถานะ</th>
+                                <th>การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="faq-table-body">
+                            <tr class="loading-row">
+                                <td colspan="4">กำลังโหลด...</td>
                             </tr>
                         </tbody>
                     </table>

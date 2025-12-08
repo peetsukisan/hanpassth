@@ -479,15 +479,18 @@ function addPromoSection(data = null) {
     `;
     container.appendChild(div);
 
-    // Initialize Quill for this section
+    // Initialize Quill for this section with WordPress-like toolbar
     const quill = new Quill(`#${editorId}`, {
         theme: 'snow',
         placeholder: 'เนื้อหา Section...',
         modules: {
             toolbar: [
-                ['bold', 'italic', 'underline'],
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
                 [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                ['link'],
+                [{ 'align': [] }],
+                ['link', 'image'],
                 ['clean']
             ]
         }

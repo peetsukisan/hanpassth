@@ -225,6 +225,68 @@ const dbService = {
             console.error('Error deleting popup:', error);
             throw error;
         }
+    },
+
+    // ==================== FAQ ====================
+
+    // Get all FAQs
+    async getFaqs(activeOnly = false) {
+        try {
+            const snapshot = await db.collection('faqs').get();
+            let results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            if (activeOnly) {
+                results = results.filter(item => item.isActive === true);
+            }
+
+            results.sort((a, b) => (a.order || 0) - (b.order || 0));
+            return results;
+        } catch (error) {
+            console.error('Error getting faqs:', error);
+            return [];
+        }
+    },
+
+    // Add FAQ
+    async addFaq(data) {
+        try {
+            const faqData = {
+                ...data,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                isActive: data.isActive !== undefined ? data.isActive : true
+            };
+            const docRef = await db.collection('faqs').add(faqData);
+            return { id: docRef.id, ...faqData };
+        } catch (error) {
+            console.error('Error adding faq:', error);
+            throw error;
+        }
+    },
+
+    // Update FAQ
+    async updateFaq(id, data) {
+        try {
+            const updateData = {
+                ...data,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await db.collection('faqs').doc(id).update(updateData);
+            return { id, ...updateData };
+        } catch (error) {
+            console.error('Error updating faq:', error);
+            throw error;
+        }
+    },
+
+    // Delete FAQ
+    async deleteFaq(id) {
+        try {
+            await db.collection('faqs').doc(id).delete();
+            return true;
+        } catch (error) {
+            console.error('Error deleting faq:', error);
+            throw error;
+        }
     }
 };
 

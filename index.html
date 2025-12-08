@@ -116,58 +116,10 @@
         <div class="section-container">
             <h2 class="section-title">ปัญหาที่เจอบ่อยๆ</h2>
             <p class="section-subtitle">คำถามและคำตอบสำหรับปัญหาที่พบบ่อย</p>
-            <div class="faq-grid">
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>ลงทะเบียนไม่ได้ ทำอย่างไร?</span>
-                        <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 9l6 6 6-6" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>ตรวจสอบว่าหมายเลขโทรศัพท์หรืออีเมลถูกต้อง และยังไม่เคยลงทะเบียนมาก่อน หากยังไม่ได้ โปรดติดต่อ
-                            Call Center</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>ลืมรหัสผ่าน ต้องทำอย่างไร?</span>
-                        <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 9l6 6 6-6" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>กดปุ่ม "ลืมรหัสผ่าน" ที่หน้าเข้าสู่ระบบ และทำตามขั้นตอนการรีเซ็ตรหัสผ่านผ่าน SMS หรืออีเมล
-                        </p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>ใช้โปรโมชั่นไม่ได้ ทำอย่างไร?</span>
-                        <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 9l6 6 6-6" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>ตรวจสอบเงื่อนไขโปรโมชั่น เช่น ยอดขั้นต่ำ, วันหมดอายุ, และจำนวนครั้งที่ใช้ได้
-                            หากเงื่อนไขครบแล้วยังใช้ไม่ได้ โปรดติดต่อเรา</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>ติดต่อ Customer Service ได้ที่ไหน?</span>
-                        <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 9l6 6 6-6" />
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>ติดต่อได้ที่ Call Center 1234-5678 หรือแชทกับเราผ่านปุ่ม Messenger ที่มุมล่างขวาของหน้าเว็ป
-                        </p>
-                    </div>
+            <div class="faq-grid" id="faq-grid">
+                <div class="loading-placeholder">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังโหลด...</p>
                 </div>
             </div>
         </div>
@@ -180,27 +132,39 @@
         </div>
     </footer>
 
-    <!-- Popup Ad Container -->
+    <!-- Popup Ad Container (wooricard style) -->
     <div class="popup-overlay" id="popup-ad" style="display: none;">
-        <div class="popup-content popup-3x4">
-            <button class="popup-close" onclick="closePopup()">&times;</button>
-            <div class="popup-carousel" id="popup-carousel">
-                <!-- Popups will be loaded dynamically -->
+        <div class="popup-content popup-wide">
+            <div class="popup-header">
+                <h3 class="popup-title" id="popup-title-text">โปรโมชั่นพิเศษ</h3>
+                <button class="popup-close" onclick="closePopup()">&times;</button>
             </div>
-            <div class="popup-nav" id="popup-nav" style="display: none;">
-                <button class="popup-nav-btn popup-pause-btn" onclick="togglePopupPause()"
-                    id="popup-pause-btn">⏸</button>
-                <button class="popup-nav-btn" onclick="prevPopup()">&lt;</button>
-                <button class="popup-nav-btn" onclick="nextPopup()">&gt;</button>
-                <span class="popup-indicator" id="popup-indicator">1</span>
-                <div class="popup-progress-bar">
-                    <div class="popup-progress-fill" id="popup-progress"></div>
+            <div class="popup-main">
+                <button class="popup-arrow popup-arrow-left" onclick="prevPopup()" id="popup-arrow-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+                <div class="popup-carousel" id="popup-carousel">
+                    <!-- Popups will be loaded dynamically -->
                 </div>
-                <span class="popup-total" id="popup-total">3</span>
+                <button class="popup-arrow popup-arrow-right" onclick="nextPopup()" id="popup-arrow-right">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6" />
+                    </svg>
+                </button>
+            </div>
+            <div class="popup-dots" id="popup-dots">
+                <!-- Dots will be generated dynamically -->
             </div>
             <div class="popup-footer">
-                <button class="popup-close-today" onclick="closePopupToday()">ปิดวันนี้ไม่ต้องแสดงอีก</button>
-                <button class="popup-close-btn" onclick="closePopup()">ปิด</button>
+                <label class="popup-checkbox-label">
+                    <input type="checkbox" id="popup-dont-show">
+                    <span>3วันไม่ต้องแสดงอีก</span>
+                </label>
+                <button class="popup-close-btn" onclick="closePopupWithCheck()">ปิด</button>
             </div>
         </div>
     </div>
@@ -238,9 +202,13 @@
 
         function renderPopups() {
             const carousel = document.getElementById('popup-carousel');
-            const nav = document.getElementById('popup-nav');
+            const dotsContainer = document.getElementById('popup-dots');
+            const arrows = document.querySelectorAll('.popup-arrow');
 
             if (popupData.length === 0) return;
+
+            // Set first popup title
+            document.getElementById('popup-title-text').textContent = popupData[0].title || 'โปรโมชั่นพิเศษ';
 
             carousel.innerHTML = popupData.map((popup, i) => {
                 if (popup.type === 'image' && popup.image) {
@@ -260,41 +228,34 @@
                 }
             }).join('');
 
-            nav.style.display = popupData.length > 1 ? 'flex' : 'none';
-            document.getElementById('popup-total').textContent = popupData.length;
-            updatePopupIndicator();
-            startAutoPlay();
-        }
+            // Create dots
+            dotsContainer.innerHTML = popupData.map((_, i) =>
+                `<button class="popup-dot ${i === 0 ? 'active' : ''}" onclick="goToPopup(${i})"></button>`
+            ).join('');
 
-        let popupInterval = null;
-        let isPaused = false;
-
-        function startAutoPlay() {
-            if (popupInterval) clearInterval(popupInterval);
-            if (popupData.length > 1 && !isPaused) {
-                popupInterval = setInterval(() => {
-                    nextPopup();
-                }, 4000);
-            }
-        }
-
-        function togglePopupPause() {
-            isPaused = !isPaused;
-            document.getElementById('popup-pause-btn').textContent = isPaused ? '▶' : '⏸';
-            if (isPaused) {
-                clearInterval(popupInterval);
-            } else {
-                startAutoPlay();
-            }
+            // Show/hide arrows and dots based on count
+            arrows.forEach(a => a.style.display = popupData.length > 1 ? 'flex' : 'none');
+            dotsContainer.style.display = popupData.length > 1 ? 'flex' : 'none';
         }
 
         function updatePopupIndicator() {
-            document.getElementById('popup-indicator').textContent = currentPopupIndex + 1;
-            const progress = ((currentPopupIndex + 1) / popupData.length) * 100;
-            document.getElementById('popup-progress').style.width = progress + '%';
+            // Update title
+            if (popupData[currentPopupIndex]) {
+                document.getElementById('popup-title-text').textContent = popupData[currentPopupIndex].title || 'โปรโมชั่นพิเศษ';
+            }
+            // Update slides
             document.querySelectorAll('.popup-slide').forEach((slide, i) => {
                 slide.classList.toggle('active', i === currentPopupIndex);
             });
+            // Update dots
+            document.querySelectorAll('.popup-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentPopupIndex);
+            });
+        }
+
+        function goToPopup(index) {
+            currentPopupIndex = index;
+            updatePopupIndicator();
         }
 
         function nextPopup() {
@@ -308,9 +269,9 @@
         }
 
         function checkShowPopup() {
-            const lastClosed = localStorage.getItem('popupClosedDate');
-            const today = new Date().toDateString();
-            if (lastClosed !== today && popupData.length > 0) {
+            const hideUntil = localStorage.getItem('popupHideUntil');
+            const now = new Date().getTime();
+            if ((!hideUntil || now > parseInt(hideUntil)) && popupData.length > 0) {
                 renderPopups();
                 document.getElementById('popup-ad').style.display = 'flex';
             }
@@ -318,11 +279,14 @@
 
         function closePopup() {
             document.getElementById('popup-ad').style.display = 'none';
-            if (popupInterval) clearInterval(popupInterval);
         }
 
-        function closePopupToday() {
-            localStorage.setItem('popupClosedDate', new Date().toDateString());
+        function closePopupWithCheck() {
+            if (document.getElementById('popup-dont-show').checked) {
+                // Hide for 3 days
+                const hideUntil = new Date().getTime() + (3 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('popupHideUntil', hideUntil);
+            }
             closePopup();
         }
 
