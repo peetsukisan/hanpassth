@@ -53,6 +53,52 @@ function toggleContentType() {
     }
 }
 
+// ==================== GUIDE TOGGLE FUNCTIONS ====================
+
+// Toggle guide display type (icon vs image)
+function toggleGuideDisplayType() {
+    const isImage = document.getElementById('guide-display-image').checked;
+    document.getElementById('guide-icon-group').style.display = isImage ? 'none' : 'block';
+    document.getElementById('guide-image-group').style.display = isImage ? 'block' : 'none';
+}
+
+// Toggle guide background type
+function toggleGuideBgType() {
+    const isImage = document.getElementById('guide-bg-type-image').checked;
+    document.getElementById('guide-bg-color-group').style.display = isImage ? 'none' : 'block';
+    document.getElementById('guide-bg-image-group').style.display = isImage ? 'block' : 'none';
+}
+
+// Toggle guide content type
+function toggleGuideContentType() {
+    const isLink = document.getElementById('guide-content-link').checked;
+    document.getElementById('guide-external-link-group').style.display = isLink ? 'block' : 'none';
+    document.getElementById('guide-content-editor-group').style.display = isLink ? 'none' : 'block';
+}
+
+// Quill editor for guides
+let quillGuideEditor = null;
+
+function initGuideQuillEditor() {
+    const editorContainer = document.getElementById('quill-editor-guide');
+    if (editorContainer && typeof Quill !== 'undefined' && !quillGuideEditor) {
+        quillGuideEditor = new Quill('#quill-editor-guide', {
+            theme: 'snow',
+            placeholder: 'เขียนเนื้อหาที่นี่...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            }
+        });
+    }
+}
+
+
 // ==================== TAB NAVIGATION ====================
 
 function initTabs() {
@@ -403,7 +449,20 @@ function openGuideModal(guideData = null) {
 
     // Reset form
     form.reset();
-    document.getElementById('guide-steps').innerHTML = '';
+
+    // Initialize Quill editor for guide
+    initGuideQuillEditor();
+    if (quillGuideEditor) {
+        quillGuideEditor.root.innerHTML = '';
+    }
+
+    // Reset toggles
+    document.getElementById('guide-display-icon').checked = true;
+    toggleGuideDisplayType();
+    document.getElementById('guide-bg-type-color').checked = true;
+    toggleGuideBgType();
+    document.getElementById('guide-content-page').checked = true;
+    toggleGuideContentType();
 
     if (guideData) {
         title.textContent = 'แก้ไขขั้นตอน';
@@ -414,9 +473,31 @@ function openGuideModal(guideData = null) {
         document.getElementById('guide-icon').value = guideData.icon || 'user-plus';
         document.getElementById('guide-active').checked = guideData.isActive !== false;
 
-        // Load steps
-        if (guideData.steps && guideData.steps.length > 0) {
-            guideData.steps.forEach(step => addGuideStep(step));
+        // Display type
+        if (guideData.displayType === 'image') {
+            document.getElementById('guide-display-image').checked = true;
+            toggleGuideDisplayType();
+            document.getElementById('guide-image').value = guideData.image || '';
+        }
+
+        // Background
+        if (guideData.backgroundImage) {
+            document.getElementById('guide-bg-type-image').checked = true;
+            toggleGuideBgType();
+            document.getElementById('guide-bg-image').value = guideData.backgroundImage || '';
+        } else {
+            document.getElementById('guide-bg').value = guideData.backgroundColor || '';
+        }
+
+        // Content type
+        if (guideData.contentType === 'link') {
+            document.getElementById('guide-content-link').checked = true;
+            toggleGuideContentType();
+            document.getElementById('guide-external-url').value = guideData.externalUrl || '';
+        } else {
+            if (quillGuideEditor && guideData.richContent) {
+                quillGuideEditor.root.innerHTML = guideData.richContent;
+            }
         }
     } else {
         title.textContent = 'เพิ่มขั้นตอน';
@@ -458,13 +539,23 @@ async function saveGuide(e) {
         content: el.querySelector('.step-content').value
     })).filter(s => s.title || s.content);
 
+    const isImageDisplay = document.getElementById('guide-display-image').checked;
+    const isImageBg = document.getElementById('guide-bg-type-image').checked;
+    const isExternalLink = document.getElementById('guide-content-link').checked;
+
     const data = {
         order: parseInt(document.getElementById('guide-order').value) || 1,
         title: document.getElementById('guide-title').value,
         description: document.getElementById('guide-description').value,
-        icon: document.getElementById('guide-icon').value,
-        isActive: document.getElementById('guide-active').checked,
-        steps: steps
+        displayType: isImageDisplay ? 'image' : 'icon',
+        icon: isImageDisplay ? '' : document.getElementById('guide-icon').value,
+        image: isImageDisplay ? document.getElementById('guide-image').value : '',
+        backgroundColor: isImageBg ? '' : (document.getElementById('guide-bg').value || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'),
+        backgroundImage: isImageBg ? document.getElementById('guide-bg-image').value : '',
+        contentType: isExternalLink ? 'link' : 'page',
+        externalUrl: isExternalLink ? document.getElementById('guide-external-url').value : '',
+        richContent: quillGuideEditor ? quillGuideEditor.root.innerHTML : '',
+        isActive: document.getElementById('guide-active').checked
     };
 
     try {
@@ -548,3 +639,6 @@ window.toggleBgType = toggleBgType;
 window.toggleContentType = toggleContentType;
 window.togglePromoStatus = togglePromoStatus;
 window.updatePromoBadge = updatePromoBadge;
+window.toggleGuideDisplayType = toggleGuideDisplayType;
+window.toggleGuideBgType = toggleGuideBgType;
+window.toggleGuideContentType = toggleGuideContentType;

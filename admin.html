@@ -147,7 +147,7 @@
                 <h2 id="promo-modal-title">เพิ่มโปรโมชั่น</h2>
                 <button class="modal-close" onclick="closePromoModal()">&times;</button>
             </div>
-            <form id="promo-form" onsubmit="savePromotion(event)">
+            <form id="promo-form" class="modal-body" onsubmit="savePromotion(event)">
                 <input type="hidden" id="promo-id">
                 <div class="form-group">
                     <label for="promo-title">ชื่อโปรโมชั่น *</label>
@@ -302,8 +302,10 @@
                 <h2 id="guide-modal-title">เพิ่มขั้นตอนการใช้งาน</h2>
                 <button class="modal-close" onclick="closeGuideModal()">&times;</button>
             </div>
-            <form id="guide-form" onsubmit="saveGuide(event)">
+            <form id="guide-form" class="modal-body" onsubmit="saveGuide(event)">
                 <input type="hidden" id="guide-id">
+
+                <!-- Basic Info -->
                 <div class="form-row">
                     <div class="form-group" style="flex: 0 0 100px;">
                         <label for="guide-order">ลำดับ *</label>
@@ -315,21 +317,78 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="guide-description">คำอธิบาย</label>
+                    <label for="guide-description">คำอธิบายย่อ</label>
                     <input type="text" id="guide-description" placeholder="ลงทะเบียนด้วยอีเมลหรือเบอร์โทรศัพท์">
                 </div>
+
+                <!-- Display Type Selection -->
                 <div class="form-group">
-                    <label for="guide-icon">Icon</label>
+                    <label>รูปแบบการแสดงผล</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="guide-display-type" id="guide-display-icon" value="icon" checked
+                                onchange="toggleGuideDisplayType()">
+                            <span>ใช้ Icon</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="guide-display-type" id="guide-display-image" value="image"
+                                onchange="toggleGuideDisplayType()">
+                            <span>ใช้รูปภาพ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Icon Selection (visible when icon selected) -->
+                <div class="form-group" id="guide-icon-group">
+                    <label for="guide-icon">เลือก Icon</label>
                     <select id="guide-icon">
-                        <option value="user-plus">User Plus (สมัครสมาชิก)</option>
-                        <option value="credit-card">Credit Card (บัตร)</option>
-                        <option value="star">Star (โปรโมชั่น)</option>
-                        <option value="check">Check (สำเร็จ)</option>
-                        <option value="settings">Settings (ตั้งค่า)</option>
-                        <option value="search">Search (ค้นหา)</option>
-                        <option value="gift">Gift (ของขวัญ)</option>
+                        <option value="user-plus">👤 User Plus (สมัครสมาชิก)</option>
+                        <option value="credit-card">💳 Credit Card (บัตร)</option>
+                        <option value="star">⭐ Star (โปรโมชั่น)</option>
+                        <option value="check">✓ Check (สำเร็จ)</option>
+                        <option value="settings">⚙️ Settings (ตั้งค่า)</option>
+                        <option value="search">🔍 Search (ค้นหา)</option>
+                        <option value="gift">🎁 Gift (ของขวัญ)</option>
+                        <option value="phone">📱 Phone (โทรศัพท์)</option>
+                        <option value="cart">🛒 Cart (ตะกร้า)</option>
+                        <option value="wallet">💰 Wallet (กระเป๋าเงิน)</option>
                     </select>
                 </div>
+
+                <!-- Image URL (visible when image selected) -->
+                <div class="form-group" id="guide-image-group" style="display: none;">
+                    <label for="guide-image">URL รูปภาพ</label>
+                    <input type="url" id="guide-image" placeholder="https://example.com/image.jpg">
+                    <small class="form-hint">ใช้ URL จาก Imgur, Google Drive, หรือ CDN อื่นๆ</small>
+                </div>
+
+                <!-- Background -->
+                <div class="form-group">
+                    <label>พื้นหลัง (สำหรับหน้ารายละเอียด)</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="guide-bg-type" id="guide-bg-type-color" value="color" checked
+                                onchange="toggleGuideBgType()">
+                            <span>สีพื้น/Gradient</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="guide-bg-type" id="guide-bg-type-image" value="image"
+                                onchange="toggleGuideBgType()">
+                            <span>รูปภาพ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="guide-bg-color-group">
+                    <label for="guide-bg">สี/Gradient</label>
+                    <input type="text" id="guide-bg" placeholder="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
+                </div>
+
+                <div class="form-group" id="guide-bg-image-group" style="display: none;">
+                    <label for="guide-bg-image">URL รูปพื้นหลัง</label>
+                    <input type="url" id="guide-bg-image" placeholder="https://example.com/bg.jpg">
+                </div>
+
                 <div class="form-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="guide-active" checked>
@@ -337,13 +396,34 @@
                     </label>
                 </div>
 
-                <!-- Steps -->
-                <div class="form-group sections-group">
-                    <label>ขั้นตอนย่อย (แสดงในหน้ารายละเอียด)</label>
-                    <div id="guide-steps"></div>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="addGuideStep()">
-                        + เพิ่มขั้นตอนย่อย
-                    </button>
+                <!-- Content Type -->
+                <div class="form-group">
+                    <label>ประเภทเนื้อหา (เมื่อคลิกจากหน้าหลัก)</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="guide-content-type" id="guide-content-page" value="page" checked
+                                onchange="toggleGuideContentType()">
+                            <span>สร้างหน้าเนื้อหาเอง</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="guide-content-type" id="guide-content-link" value="link"
+                                onchange="toggleGuideContentType()">
+                            <span>ลิ้งค์ไปที่อื่น</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="guide-external-link-group" style="display: none;">
+                    <label for="guide-external-url">URL ภายนอก</label>
+                    <input type="url" id="guide-external-url" placeholder="https://example.com/page">
+                </div>
+
+                <div id="guide-content-editor-group">
+                    <div class="form-group">
+                        <label>เนื้อหาหน้ารายละเอียด</label>
+                        <div id="quill-editor-guide"></div>
+                        <input type="hidden" id="guide-rich-content">
+                    </div>
                 </div>
 
                 <div class="modal-footer">

@@ -31,14 +31,6 @@
             <nav class="nav-menu">
                 <a href="#promotions" class="nav-link">โปรโมชั่น</a>
                 <a href="#how-to-use" class="nav-link">ขั้นตอนการใช้งาน</a>
-                <a href="admin.html" class="nav-link admin-link" title="Admin Panel">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                </a>
             </nav>
         </div>
     </header>
@@ -126,12 +118,56 @@
         </div>
     </footer>
 
+    <!-- Popup Ad -->
+    <div class="popup-overlay" id="popup-ad" style="display: none;">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+            <div class="popup-body">
+                <h3>🎉 โปรโมชั่นพิเศษ!</h3>
+                <p>สมัครวันนี้รับสิทธิพิเศษมากมาย</p>
+                <a href="#promotions" class="popup-btn" onclick="closePopup()">ดูโปรโมชั่น</a>
+            </div>
+            <div class="popup-footer">
+                <button class="popup-close-today" onclick="closePopupToday()">ปิดวันนี้ไม่ต้องแสดงอีก</button>
+                <button class="popup-close-btn" onclick="closePopup()">ปิด</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messenger Button -->
+    <a href="https://m.me/182272919008772" target="_blank" class="messenger-btn" title="แชทกับเรา">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12 2C6.48 2 2 6.21 2 11.26c0 2.91 1.44 5.51 3.69 7.21V22l3.37-1.85c.9.25 1.87.39 2.94.39 5.52 0 10-4.21 10-9.26S17.52 2 12 2zm1.1 12.47l-2.54-2.71-4.96 2.71 5.45-5.79 2.6 2.71 4.9-2.71-5.45 5.79z" />
+        </svg>
+    </a>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="db-service.js"></script>
     <script src="script.js"></script>
+
+    <!-- Popup Script -->
+    <script>
+        function checkShowPopup() {
+            const lastClosed = localStorage.getItem('popupClosedDate');
+            const today = new Date().toDateString();
+            if (lastClosed !== today) {
+                document.getElementById('popup-ad').style.display = 'flex';
+            }
+        }
+        function closePopup() {
+            document.getElementById('popup-ad').style.display = 'none';
+        }
+        function closePopupToday() {
+            localStorage.setItem('popupClosedDate', new Date().toDateString());
+            closePopup();
+        }
+        // Show popup on load
+        window.addEventListener('load', checkShowPopup);
+    </script>
 </body>
 
 </html>
