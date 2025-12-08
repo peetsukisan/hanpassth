@@ -1,14 +1,12 @@
 // Firebase Configuration
-// ⚠️ Replace these with your actual Firebase project config
-// Go to Firebase Console > Project Settings > Your apps > Web app > Config
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyBnWxFn0luYDejWisIKtxSFPkVPc0Lzy41",
+    authDomain: "hanpass-promo.firebaseapp.com",
+    projectId: "hanpass-promo",
+    storageBucket: "hanpass-promo.firebasestorage.app",
+    messagingSenderId: "455629320584",
+    appId: "1:455629320584:web:c288669dda698436b691cd"
 };
 
 // Initialize Firebase
