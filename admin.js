@@ -466,15 +466,40 @@ function closePromoModal() {
 function addPromoSection(data = null) {
     const container = document.getElementById('promo-sections');
     const index = container.children.length;
+    const editorId = `section-editor-${index}`;
 
     const div = document.createElement('div');
     div.className = 'section-item';
     div.innerHTML = `
         <input type="text" placeholder="หัวข้อ Section" class="section-title" value="${data?.title || ''}">
-        <textarea placeholder="เนื้อหา" class="section-content" rows="3">${data?.content || ''}</textarea>
+        <div class="section-editor-container">
+            <div id="${editorId}" class="section-quill"></div>
+        </div>
         <button type="button" class="btn-remove" onclick="this.parentElement.remove()">ลบ Section</button>
     `;
     container.appendChild(div);
+
+    // Initialize Quill for this section
+    const quill = new Quill(`#${editorId}`, {
+        theme: 'snow',
+        placeholder: 'เนื้อหา Section...',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['link'],
+                ['clean']
+            ]
+        }
+    });
+
+    // Set initial content if data exists
+    if (data?.content) {
+        quill.root.innerHTML = data.content;
+    }
+
+    // Store quill reference on the div
+    div.quillEditor = quill;
 }
 
 async function savePromotion(e) {
@@ -483,12 +508,12 @@ async function savePromotion(e) {
     const id = document.getElementById('promo-id').value;
     const isImageBg = document.getElementById('bg-type-image').checked;
 
-    // Collect sections
+    // Collect sections from Quill editors
     const sectionsElements = document.querySelectorAll('#promo-sections .section-item');
     const sections = Array.from(sectionsElements).map(el => ({
         title: el.querySelector('.section-title').value,
-        content: el.querySelector('.section-content').value
-    })).filter(s => s.title || s.content);
+        content: el.quillEditor ? el.quillEditor.root.innerHTML : ''
+    })).filter(s => s.title || (s.content && s.content !== '<p><br></p>'));
 
     const data = {
         title: document.getElementById('promo-title').value,

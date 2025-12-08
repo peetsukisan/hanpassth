@@ -294,12 +294,15 @@
                     <small class="form-hint">เมื่อคลิกจากหน้าหลักจะเปิดลิ้งค์นี้แทน</small>
                 </div>
 
-                <!-- Rich Text Editor (visible when content-type is page) -->
+                <!-- Content Editor (visible when content-type is page) -->
                 <div id="content-editor-group">
-                    <div class="form-group">
-                        <label>เนื้อหาหน้ารายละเอียด (Rich Editor)</label>
-                        <div id="quill-editor"></div>
-                        <input type="hidden" id="promo-rich-content">
+                    <!-- Sections with Rich Editor -->
+                    <div class="form-group sections-group">
+                        <label>Sections (เนื้อหาในหน้ารายละเอียด)</label>
+                        <div id="promo-sections"></div>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="addPromoSection()">
+                            + เพิ่ม Section
+                        </button>
                     </div>
                 </div>
 
@@ -318,15 +321,6 @@
                         <input type="checkbox" id="promo-active" checked>
                         <span>เปิดใช้งาน</span>
                     </label>
-                </div>
-
-                <!-- Sections -->
-                <div class="form-group sections-group">
-                    <label>Sections (เนื้อหาในหน้ารายละเอียด)</label>
-                    <div id="promo-sections"></div>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="addPromoSection()">
-                        + เพิ่ม Section
-                    </button>
                 </div>
 
                 <div class="modal-footer">

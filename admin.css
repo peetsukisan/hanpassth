@@ -574,6 +574,22 @@ form {
     cursor: pointer;
 }
 
+/* Section Quill Editors */
+.section-editor-container {
+    margin: 8px 0 12px;
+}
+
+.section-quill {
+    height: 200px;
+    background: white;
+    border-radius: var(--radius-md);
+}
+
+.section-quill .ql-editor {
+    min-height: 150px;
+    font-family: inherit;
+}
+
 /* Form Hint */
 .form-hint {
     display: block;
@@ -584,35 +600,35 @@ form {
 
 /* Quill Editor */
 #quill-editor {
-    height: 250px;
+    height: 400px;
     background: white;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
 }
 
 #quill-editor .ql-editor {
-    min-height: 200px;
+    min-height: 350px;
     font-family: inherit;
     font-size: 1rem;
 }
 
 .ql-toolbar.ql-snow {
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
     border-color: #ddd;
 }
 
 .ql-container.ql-snow {
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
     border-color: #ddd;
 }
 
 #quill-editor-guide {
-    height: 250px;
+    height: 350px;
     background: white;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
 }
 
 #quill-editor-guide .ql-editor {
-    min-height: 200px;
+    min-height: 300px;
     font-family: inherit;
     font-size: 1rem;
 }
