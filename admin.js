@@ -96,7 +96,7 @@ function renderPromotionsTable() {
     if (promotions.length === 0) {
         tbody.innerHTML = `
             <tr class="loading-row">
-                <td colspan="5">ยังไม่มีโปรโมชั่น <a href="#" onclick="openPromoModal()">เพิ่มโปรโมชั่นแรก</a></td>
+                <td colspan="7">ยังไม่มีโปรโมชั่น <a href="#" onclick="openPromoModal()">เพิ่มโปรโมชั่นแรก</a></td>
             </tr>
         `;
         return;
@@ -108,11 +108,31 @@ function renderPromotionsTable() {
                 <strong>${promo.title || '-'}</strong>
                 ${promo.subtitle ? `<br><small style="color: #999;">${promo.subtitle}</small>` : ''}
             </td>
-            <td><span class="status-badge" style="background: rgba(43, 74, 207, 0.1); color: var(--primary-blue);">${promo.badge || 'EVENT'}</span></td>
-            <td><span class="status-badge ${promo.isActive ? 'active' : 'inactive'}">${promo.isActive ? 'เปิดใช้งาน' : 'ปิด'}</span></td>
-            <td>${formatDate(promo.createdAt)}</td>
+            <td>
+                <select class="inline-badge-select" onchange="updatePromoBadge('${promo.id}', this.value)">
+                    <option value="EVENT" ${promo.badge === 'EVENT' ? 'selected' : ''}>EVENT</option>
+                    <option value="HOT" ${promo.badge === 'HOT' ? 'selected' : ''}>HOT</option>
+                    <option value="NEW" ${promo.badge === 'NEW' ? 'selected' : ''}>NEW</option>
+                    <option value="SALE" ${promo.badge === 'SALE' ? 'selected' : ''}>SALE</option>
+                    <option value="SPECIAL" ${promo.badge === 'SPECIAL' ? 'selected' : ''}>SPECIAL</option>
+                </select>
+            </td>
+            <td>
+                <label class="toggle-switch">
+                    <input type="checkbox" ${promo.isActive ? 'checked' : ''} onchange="togglePromoStatus('${promo.id}', this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </td>
+            <td>${promo.startDate || '-'}</td>
+            <td>${promo.endDate || '-'}</td>
             <td>
                 <div class="action-buttons">
+                    <a href="promo-detail.html?id=${promo.id}" target="_blank" class="btn-icon preview" title="ดูตัวอย่าง">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </a>
                     <button class="btn-icon edit" onclick="editPromotion('${promo.id}')" title="แก้ไข">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
@@ -292,7 +312,35 @@ async function deletePromotion(id) {
         await loadPromotions();
     } catch (error) {
         console.error('Error deleting promotion:', error);
-        showToast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+        showToast('เกิดข้อผิดพลาด', 'error');
+    }
+}
+
+// Toggle promotion active status
+async function togglePromoStatus(id, isActive) {
+    try {
+        await dbService.updatePromotion(id, { isActive: isActive });
+        showToast(isActive ? 'เปิดใช้งานแล้ว' : 'ปิดใช้งานแล้ว', 'success');
+        const promo = promotions.find(p => p.id === id);
+        if (promo) promo.isActive = isActive;
+    } catch (error) {
+        console.error('Error updating status:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+        await loadPromotions();
+    }
+}
+
+// Update promotion badge inline
+async function updatePromoBadge(id, badge) {
+    try {
+        await dbService.updatePromotion(id, { badge: badge });
+        showToast('อัพเดท Badge สำเร็จ', 'success');
+        const promo = promotions.find(p => p.id === id);
+        if (promo) promo.badge = badge;
+    } catch (error) {
+        console.error('Error updating badge:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+        await loadPromotions();
     }
 }
 
@@ -497,3 +545,6 @@ window.saveGuide = saveGuide;
 window.editGuide = editGuide;
 window.deleteGuide = deleteGuide;
 window.toggleBgType = toggleBgType;
+window.toggleContentType = toggleContentType;
+window.togglePromoStatus = togglePromoStatus;
+window.updatePromoBadge = updatePromoBadge;
