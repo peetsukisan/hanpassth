@@ -73,8 +73,7 @@
 
             <!-- Action Buttons -->
             <div class="action-section" id="action-section" style="display: none;">
-                <a href="#" class="btn-action primary" id="action-btn">สมัครเลย</a>
-                <a href="index.html#promotions" class="btn-action secondary">ดูโปรโมชั่นอื่นๆ</a>
+                <a href="index.html#promotions" class="btn-action primary">ดูโปรโมชั่นอื่นๆ</a>
             </div>
         </div>
     </main>
@@ -135,8 +134,16 @@
                     hero.classList.add('dark-text');
                 }
 
-                // Description
-                if (promo.description) {
+                // Check if external link - redirect immediately
+                if (promo.contentType === 'link' && promo.externalUrl) {
+                    window.location.href = promo.externalUrl;
+                    return;
+                }
+
+                // Rich Content (from Quill editor)
+                if (promo.richContent && promo.richContent !== '<p><br></p>') {
+                    document.getElementById('description-content').innerHTML = promo.richContent;
+                } else if (promo.description) {
                     document.getElementById('description-content').innerHTML = `<p>${promo.description}</p>`;
                 } else {
                     document.getElementById('description-section').style.display = 'none';

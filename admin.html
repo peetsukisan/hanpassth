@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <!-- Quill.js Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="admin.css">
 </head>
 
@@ -223,10 +225,40 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Content Type Selection -->
                 <div class="form-group">
-                    <label for="promo-description">รายละเอียดเต็ม</label>
-                    <textarea id="promo-description" rows="4" placeholder="รายละเอียดโปรโมชั่น..."></textarea>
+                    <label>ประเภทเนื้อหา (เมื่อคลิกจากหน้าหลัก)</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="content-type" id="content-type-page" value="page" checked
+                                onchange="toggleContentType()">
+                            <span>สร้างหน้าเนื้อหาเอง</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="content-type" id="content-type-link" value="link"
+                                onchange="toggleContentType()">
+                            <span>ลิ้งค์ไปที่อื่น (External URL)</span>
+                        </label>
+                    </div>
                 </div>
+
+                <!-- External Link (hidden by default) -->
+                <div class="form-group" id="external-link-group" style="display: none;">
+                    <label for="promo-external-url">URL ภายนอก</label>
+                    <input type="url" id="promo-external-url" placeholder="https://example.com/page">
+                    <small class="form-hint">เมื่อคลิกจากหน้าหลักจะเปิดลิ้งค์นี้แทน</small>
+                </div>
+
+                <!-- Rich Text Editor (visible when content-type is page) -->
+                <div id="content-editor-group">
+                    <div class="form-group">
+                        <label>เนื้อหาหน้ารายละเอียด (Rich Editor)</label>
+                        <div id="quill-editor"></div>
+                        <input type="hidden" id="promo-rich-content">
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="promo-start-date">วันที่เริ่ม</label>
@@ -329,6 +361,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="db-service.js"></script>
+    <!-- Quill.js -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script src="admin.js"></script>
 </body>
 

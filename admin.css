@@ -502,6 +502,30 @@ form {
     margin-top: 4px;
 }
 
+/* Quill Editor */
+#quill-editor {
+    height: 250px;
+    background: white;
+    border-radius: var(--radius-sm);
+}
+
+#quill-editor .ql-editor {
+    min-height: 200px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.ql-toolbar.ql-snow {
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    border-color: #ddd;
+}
+
+.ql-container.ql-snow {
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    border-color: #ddd;
+}
+
+
 /* ===== Toast ===== */
 .toast {
     position: fixed;

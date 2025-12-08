@@ -110,6 +110,12 @@ function renderPromotions() {
         const badgeClass = promo.badgeStyle === 'light' ? 'light' : '';
         const isImageOnly = promo.displayMode === 'image-only';
 
+        // Determine link URL - external or detail page
+        const linkUrl = (promo.contentType === 'link' && promo.externalUrl)
+            ? promo.externalUrl
+            : `promo-detail.html?id=${promo.id}`;
+        const linkTarget = (promo.contentType === 'link' && promo.externalUrl) ? ' target="_blank"' : '';
+
         // Build background style
         let bgStyle = '';
         if (promo.backgroundImage) {
@@ -129,14 +135,14 @@ function renderPromotions() {
         // Image-only mode
         if (isImageOnly && promo.backgroundImage) {
             return `
-                <a href="promo-detail.html?id=${promo.id}" class="promo-card banner-card image-only" style="${bgStyle}">
+                <a href="${linkUrl}"${linkTarget} class="promo-card banner-card image-only" style="${bgStyle}">
                 </a>
             `;
         }
 
         // All cards use emart banner style
         return `
-            <a href="promo-detail.html?id=${promo.id}" class="promo-card banner-card ${textClass}" style="${bgStyle}">
+            <a href="${linkUrl}"${linkTarget} class="promo-card banner-card ${textClass}" style="${bgStyle}">
                 <div class="banner-content">
                     <span class="card-badge ${badgeClass}">${promo.badge || 'EVENT'}</span>
                     <h3 class="card-title">${promo.title || ''}</h3>

@@ -1,13 +1,57 @@
 // Admin Panel JavaScript
 
+// Quill editor instance
+let quillEditor = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize tabs
     initTabs();
+
+    // Initialize Quill editor
+    initQuillEditor();
 
     // Load data
     await loadPromotions();
     await loadGuides();
 });
+
+// ==================== QUILL EDITOR ====================
+
+function initQuillEditor() {
+    const editorContainer = document.getElementById('quill-editor');
+    if (editorContainer && typeof Quill !== 'undefined') {
+        quillEditor = new Quill('#quill-editor', {
+            theme: 'snow',
+            placeholder: 'เขียนเนื้อหาที่นี่...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            }
+        });
+    }
+}
+
+// Toggle content type (page vs external link)
+function toggleContentType() {
+    const isExternalLink = document.getElementById('content-type-link').checked;
+    const externalGroup = document.getElementById('external-link-group');
+    const editorGroup = document.getElementById('content-editor-group');
+
+    if (isExternalLink) {
+        externalGroup.style.display = 'block';
+        editorGroup.style.display = 'none';
+    } else {
+        externalGroup.style.display = 'none';
+        editorGroup.style.display = 'block';
+    }
+}
 
 // ==================== TAB NAVIGATION ====================
 
@@ -100,6 +144,16 @@ function openPromoModal(promoData = null) {
     document.getElementById('bg-type-color').checked = true;
     toggleBgType();
 
+    // Reset content type
+    document.getElementById('content-type-page').checked = true;
+    toggleContentType();
+
+    // Reset Quill editor
+    if (quillEditor) {
+        quillEditor.root.innerHTML = '';
+    }
+    document.getElementById('promo-external-url').value = '';
+
     if (promoData) {
         title.textContent = 'แก้ไขโปรโมชั่น';
         document.getElementById('promo-id').value = promoData.id;
@@ -112,7 +166,6 @@ function openPromoModal(promoData = null) {
         document.getElementById('promo-display-mode').value = promoData.displayMode || 'text-overlay';
         document.getElementById('promo-card-type').value = promoData.cardType || 'banner';
         document.getElementById('promo-text-color').value = promoData.textColor || 'light';
-        document.getElementById('promo-description').value = promoData.description || '';
         document.getElementById('promo-start-date').value = promoData.startDate || '';
         document.getElementById('promo-end-date').value = promoData.endDate || '';
         document.getElementById('promo-active').checked = promoData.isActive !== false;
@@ -121,6 +174,18 @@ function openPromoModal(promoData = null) {
         if (promoData.backgroundImage) {
             document.getElementById('bg-type-image').checked = true;
             toggleBgType();
+        }
+
+        // Set content type
+        if (promoData.contentType === 'link') {
+            document.getElementById('content-type-link').checked = true;
+            toggleContentType();
+            document.getElementById('promo-external-url').value = promoData.externalUrl || '';
+        } else {
+            // Load rich content into Quill
+            if (quillEditor && promoData.richContent) {
+                quillEditor.root.innerHTML = promoData.richContent;
+            }
         }
 
         // Load sections
@@ -185,7 +250,9 @@ async function savePromotion(e) {
         displayMode: document.getElementById('promo-display-mode').value,
         cardType: document.getElementById('promo-card-type').value,
         textColor: document.getElementById('promo-text-color').value,
-        description: document.getElementById('promo-description').value,
+        contentType: document.getElementById('content-type-link').checked ? 'link' : 'page',
+        externalUrl: document.getElementById('content-type-link').checked ? document.getElementById('promo-external-url').value : '',
+        richContent: quillEditor ? quillEditor.root.innerHTML : '',
         startDate: document.getElementById('promo-start-date').value,
         endDate: document.getElementById('promo-end-date').value,
         isActive: document.getElementById('promo-active').checked,
