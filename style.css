@@ -176,19 +176,21 @@ body {
 /* Search Dropdown */
 .search-box {
     position: relative;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .search-dropdown {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
     right: 0;
     background: var(--bg-white);
     border: 1px solid var(--border-color);
-    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    border-radius: var(--radius-lg);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    max-height: 400px;
+    max-height: 350px;
     overflow-y: auto;
     z-index: 100;
 }
