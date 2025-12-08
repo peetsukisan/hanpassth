@@ -210,11 +210,30 @@ function renderGuides() {
 function initCarousel() {
     const track = document.querySelector('.carousel-track');
     const cards = document.querySelectorAll('.promo-card');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const pauseBtn = document.getElementById('pause-btn');
-    const pauseIcon = document.getElementById('pause-icon');
-    const playIcon = document.getElementById('play-icon');
+
+    // Clone buttons to remove old event listeners
+    let prevBtn = document.getElementById('prev-btn');
+    let nextBtn = document.getElementById('next-btn');
+    let pauseBtn = document.getElementById('pause-btn');
+
+    if (prevBtn) {
+        const newPrev = prevBtn.cloneNode(true);
+        prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+        prevBtn = newPrev;
+    }
+    if (nextBtn) {
+        const newNext = nextBtn.cloneNode(true);
+        nextBtn.parentNode.replaceChild(newNext, nextBtn);
+        nextBtn = newNext;
+    }
+    if (pauseBtn) {
+        const newPause = pauseBtn.cloneNode(true);
+        pauseBtn.parentNode.replaceChild(newPause, pauseBtn);
+        pauseBtn = newPause;
+    }
+
+    const pauseIcon = pauseBtn?.querySelector('#pause-icon') || document.getElementById('pause-icon');
+    const playIcon = pauseBtn?.querySelector('#play-icon') || document.getElementById('play-icon');
     const currentIndicator = document.getElementById('page-current');
     const totalIndicator = document.getElementById('page-total');
     const progressFill = document.getElementById('progress-fill');
