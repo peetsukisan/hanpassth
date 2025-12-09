@@ -1380,14 +1380,15 @@ a.step-card:hover .step-icon {
 }
 
 .faq-item.active .faq-answer {
-    max-height: 500px;
+    max-height: 2000px;
 }
 
 .faq-answer-content {
     padding: 0 24px 20px;
     color: var(--text-gray);
-    line-height: 1.7;
+    line-height: 1.8;
     text-align: left;
+    white-space: pre-line;
 }
 
 /* Rich content styling for FAQ answers */

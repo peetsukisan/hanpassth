@@ -104,18 +104,14 @@ function initGuideQuillEditor() {
 let quillFaqEditor = null;
 
 function initFaqQuillEditor() {
-    const editorContainer = document.getElementById('faq-answer-editor');
-    if (!editorContainer || typeof Quill === 'undefined') return;
+    const wrapper = document.getElementById('faq-answer-wrapper');
+    if (!wrapper || typeof Quill === 'undefined') return;
 
-    // Properly destroy existing Quill instance
-    if (quillFaqEditor) {
-        quillFaqEditor = null;
-    }
+    // Completely remove old editor and create new one
+    quillFaqEditor = null;
+    wrapper.innerHTML = '<div id="faq-answer-editor"></div>';
 
-    // Remove all children (toolbar + editor content)
-    editorContainer.innerHTML = '';
-
-    // Recreate the editor
+    // Create fresh Quill instance
     quillFaqEditor = new Quill('#faq-answer-editor', {
         theme: 'snow',
         placeholder: 'พิมพ์คำตอบที่นี่...',
