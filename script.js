@@ -586,45 +586,4 @@ function initStepAnimations() {
     });
 }
 
-// ==================== FAQ ====================
 
-function toggleFaq(button) {
-    const item = button.parentElement;
-    item.classList.toggle('active');
-}
-
-async function loadFaqs() {
-    try {
-        const faqs = await dbService.getFaqs(true);
-        renderFaqs(faqs);
-    } catch (error) {
-        console.error('Error loading FAQs:', error);
-    }
-}
-
-function renderFaqs(faqs) {
-    const container = document.getElementById('faq-grid');
-    if (!container) return;
-
-    if (faqs.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">ยังไม่มีคำถามที่พบบ่อย</p>';
-        return;
-    }
-
-    container.innerHTML = faqs.map(faq => `
-        <div class="faq-item">
-            <button class="faq-question" onclick="toggleFaq(this)">
-                <span>${faq.question}</span>
-                <svg class="faq-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
-            </button>
-            <div class="faq-answer">
-                <div class="faq-answer-content">${faq.answer}</div>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Initialize FAQ on page load
-document.addEventListener('DOMContentLoaded', loadFaqs);
