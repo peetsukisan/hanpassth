@@ -633,6 +633,20 @@ form {
     font-size: 1rem;
 }
 
+/* FAQ Quill Editor */
+#faq-answer-editor {
+    height: 250px;
+    background: white;
+    border-radius: var(--radius-md);
+}
+
+#faq-answer-editor .ql-editor {
+    min-height: 200px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
 
 /* ===== Toast ===== */
 .toast {

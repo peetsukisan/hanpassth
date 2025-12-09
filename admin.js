@@ -100,6 +100,34 @@ function initGuideQuillEditor() {
     }
 }
 
+// Quill editor for FAQ
+let quillFaqEditor = null;
+
+function initFaqQuillEditor() {
+    const editorContainer = document.getElementById('faq-answer-editor');
+    if (editorContainer && typeof Quill !== 'undefined') {
+        // Destroy existing editor if any
+        if (quillFaqEditor) {
+            editorContainer.innerHTML = '';
+            quillFaqEditor = null;
+        }
+        quillFaqEditor = new Quill('#faq-answer-editor', {
+            theme: 'snow',
+            placeholder: 'พิมพ์คำตอบที่นี่...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['link'],
+                    ['clean']
+                ]
+            }
+        });
+    }
+}
+
 
 // ==================== TAB NAVIGATION ====================
 
@@ -922,17 +950,27 @@ function openFaqModal(faqData = null) {
     form.reset();
     document.getElementById('faq-id').value = '';
 
+    // Initialize Quill editor for FAQ
+    initFaqQuillEditor();
+
     if (faqData) {
         title.textContent = 'แก้ไข FAQ';
         document.getElementById('faq-id').value = faqData.id;
         document.getElementById('faq-order').value = faqData.order || 1;
         document.getElementById('faq-question').value = faqData.question || '';
-        document.getElementById('faq-answer').value = faqData.answer || '';
+        // Load content into Quill editor
+        if (quillFaqEditor) {
+            quillFaqEditor.root.innerHTML = faqData.answer || '';
+        }
         document.getElementById('faq-active').checked = faqData.isActive !== false;
     } else {
         title.textContent = 'เพิ่ม FAQ ใหม่';
         document.getElementById('faq-order').value = faqs.length + 1;
         document.getElementById('faq-active').checked = true;
+        // Clear Quill editor
+        if (quillFaqEditor) {
+            quillFaqEditor.root.innerHTML = '';
+        }
     }
 
     modal.classList.add('active');
@@ -947,10 +985,14 @@ async function saveFaq() {
     const id = document.getElementById('faq-id').value;
     const order = parseInt(document.getElementById('faq-order').value) || 1;
     const question = document.getElementById('faq-question').value.trim();
-    const answer = document.getElementById('faq-answer').value.trim();
+    // Get answer from Quill editor
+    const answer = quillFaqEditor ? quillFaqEditor.root.innerHTML : '';
     const isActive = document.getElementById('faq-active').checked;
 
-    if (!question || !answer) {
+    // Check if answer is empty (Quill returns <p><br></p> for empty content)
+    const isAnswerEmpty = !answer || answer === '<p><br></p>' || answer.trim() === '';
+
+    if (!question || isAnswerEmpty) {
         showToast('กรุณากรอกคำถามและคำตอบ', 'error');
         return;
     }

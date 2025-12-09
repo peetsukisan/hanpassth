@@ -1389,3 +1389,66 @@ a.step-card:hover .step-icon {
     line-height: 1.7;
     text-align: left;
 }
+
+/* Rich content styling for FAQ answers */
+.faq-answer-content p {
+    margin: 0 0 12px;
+}
+
+.faq-answer-content p:last-child {
+    margin-bottom: 0;
+}
+
+.faq-answer-content strong,
+.faq-answer-content b {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.faq-answer-content em,
+.faq-answer-content i {
+    font-style: italic;
+}
+
+.faq-answer-content u {
+    text-decoration: underline;
+}
+
+.faq-answer-content ul,
+.faq-answer-content ol {
+    margin: 12px 0;
+    padding-left: 24px;
+}
+
+.faq-answer-content li {
+    margin-bottom: 6px;
+}
+
+.faq-answer-content a {
+    color: var(--primary-blue);
+    text-decoration: underline;
+}
+
+.faq-answer-content a:hover {
+    text-decoration: none;
+}
+
+.faq-answer-content h1,
+.faq-answer-content h2,
+.faq-answer-content h3 {
+    color: var(--text-dark);
+    font-weight: 600;
+    margin: 16px 0 8px;
+}
+
+.faq-answer-content h1 {
+    font-size: 1.4rem;
+}
+
+.faq-answer-content h2 {
+    font-size: 1.2rem;
+}
+
+.faq-answer-content h3 {
+    font-size: 1.1rem;
+}
