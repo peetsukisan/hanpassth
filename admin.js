@@ -105,27 +105,31 @@ let quillFaqEditor = null;
 
 function initFaqQuillEditor() {
     const editorContainer = document.getElementById('faq-answer-editor');
-    if (editorContainer && typeof Quill !== 'undefined') {
-        // Destroy existing editor if any
-        if (quillFaqEditor) {
-            editorContainer.innerHTML = '';
-            quillFaqEditor = null;
-        }
-        quillFaqEditor = new Quill('#faq-answer-editor', {
-            theme: 'snow',
-            placeholder: 'พิมพ์คำตอบที่นี่...',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['link'],
-                    ['clean']
-                ]
-            }
-        });
+    if (!editorContainer || typeof Quill === 'undefined') return;
+
+    // Properly destroy existing Quill instance
+    if (quillFaqEditor) {
+        quillFaqEditor = null;
     }
+
+    // Remove all children (toolbar + editor content)
+    editorContainer.innerHTML = '';
+
+    // Recreate the editor
+    quillFaqEditor = new Quill('#faq-answer-editor', {
+        theme: 'snow',
+        placeholder: 'พิมพ์คำตอบที่นี่...',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['link'],
+                ['clean']
+            ]
+        }
+    });
 }
 
 

@@ -913,7 +913,7 @@ a.step-card:hover .step-icon {
 }
 
 .faq-item.active .faq-answer {
-    max-height: 200px;
+    max-height: 1000px;
 }
 
 .faq-answer p {
