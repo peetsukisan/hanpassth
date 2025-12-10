@@ -197,7 +197,10 @@ function renderPopupsTable() {
 
     tbody.innerHTML = popups.map(popup => `
         <tr>
-            <td><strong style="color: var(--primary-blue);">${popup.order || '-'}</strong></td>
+            <td>
+                <input type="number" class="order-input" value="${popup.order || 1}" 
+                    min="1" onchange="updatePopupOrder('${popup.id}', this.value)" title="แก้ไขลำดับ">
+            </td>
             <td>
                 <strong>${popup.title || 'ไม่มีชื่อ'}</strong>
                 <small style="display:block;color:#888;">${popup.type === 'image' ? '🖼️ รูปภาพ' : '📝 ข้อความ'}</small>
@@ -368,8 +371,12 @@ function renderPromotionsTable() {
         return;
     }
 
-    tbody.innerHTML = promotions.map(promo => `
+    tbody.innerHTML = promotions.map((promo, index) => `
         <tr>
+            <td>
+                <input type="number" class="order-input" value="${promo.order || index + 1}" 
+                    min="1" onchange="updatePromoOrder('${promo.id}', this.value)" title="แก้ไขลำดับ">
+            </td>
             <td>
                 <strong>${promo.title || '-'}</strong>
                 ${promo.subtitle ? `<br><small style="color: #999;">${promo.subtitle}</small>` : ''}
@@ -666,7 +673,10 @@ function renderGuidesTable() {
 
     tbody.innerHTML = guides.map(guide => `
         <tr>
-            <td><strong style="color: var(--primary-blue);">${guide.order || '-'}</strong></td>
+            <td>
+                <input type="number" class="order-input" value="${guide.order || 1}" 
+                    min="1" onchange="updateGuideOrder('${guide.id}', this.value)" title="แก้ไขลำดับ">
+            </td>
             <td><strong>${guide.title || '-'}</strong></td>
             <td>${guide.description || '-'}</td>
             <td>
@@ -919,7 +929,10 @@ function renderFaqsTable() {
 
     tbody.innerHTML = faqs.map((faq, index) => `
         <tr>
-            <td>${faq.order || index + 1}</td>
+            <td>
+                <input type="number" class="order-input" value="${faq.order || index + 1}" 
+                    min="1" onchange="updateFaqOrder('${faq.id}', this.value)" title="แก้ไขลำดับ">
+            </td>
             <td><strong>${faq.question || '-'}</strong></td>
             <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${faq.answer || '-'}</td>
             <td>
@@ -1100,3 +1113,53 @@ window.saveFaq = saveFaq;
 window.editFaq = editFaq;
 window.deleteFaq = deleteFaq;
 window.toggleFaqStatus = toggleFaqStatus;
+
+// Inline order update functions
+async function updateFaqOrder(id, newOrder) {
+    try {
+        await dbService.updateFaq(id, { order: parseInt(newOrder) });
+        showToast('อัพเดทลำดับเรียบร้อย', 'success');
+        await loadFaqsAdmin();
+    } catch (error) {
+        console.error('Error updating order:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+    }
+}
+
+async function updatePopupOrder(id, newOrder) {
+    try {
+        await dbService.updatePopup(id, { order: parseInt(newOrder) });
+        showToast('อัพเดทลำดับเรียบร้อย', 'success');
+        await loadPopupsAdmin();
+    } catch (error) {
+        console.error('Error updating order:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+    }
+}
+
+async function updatePromoOrder(id, newOrder) {
+    try {
+        await dbService.updatePromotion(id, { order: parseInt(newOrder) });
+        showToast('อัพเดทลำดับเรียบร้อย', 'success');
+        await loadPromotionsAdmin();
+    } catch (error) {
+        console.error('Error updating order:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+    }
+}
+
+async function updateGuideOrder(id, newOrder) {
+    try {
+        await dbService.updateGuide(id, { order: parseInt(newOrder) });
+        showToast('อัพเดทลำดับเรียบร้อย', 'success');
+        await loadGuidesAdmin();
+    } catch (error) {
+        console.error('Error updating order:', error);
+        showToast('เกิดข้อผิดพลาด', 'error');
+    }
+}
+
+window.updateFaqOrder = updateFaqOrder;
+window.updatePopupOrder = updatePopupOrder;
+window.updatePromoOrder = updatePromoOrder;
+window.updateGuideOrder = updateGuideOrder;

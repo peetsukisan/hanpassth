@@ -347,6 +347,31 @@ body {
     border-color: var(--primary-blue);
 }
 
+/* Order Input */
+.order-input {
+    width: 60px;
+    padding: 6px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background: var(--bg-white);
+    color: var(--primary-blue);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+.order-input:hover {
+    border-color: var(--primary-blue-light);
+}
+
+.order-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(43, 74, 207, 0.15);
+}
+
 /* Preview Button */
 .btn-icon.preview {
     color: #6c5ce7;

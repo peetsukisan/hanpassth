@@ -1395,7 +1395,6 @@ a.step-card:hover .step-icon {
     color: var(--text-gray);
     line-height: 1.8;
     text-align: left;
-    white-space: pre-line;
 }
 
 /* Rich content styling for FAQ answers */
