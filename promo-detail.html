@@ -50,6 +50,8 @@
 
     <!-- Hero Banner -->
     <section class="detail-hero" id="detail-hero">
+        <div class="hero-bg" id="hero-bg"></div>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
             <span class="hero-badge" id="hero-badge">EVENT</span>
             <h1 class="hero-title" id="hero-title">กำลังโหลด...</h1>
@@ -118,14 +120,15 @@
 
                 // Update hero
                 const hero = document.getElementById('detail-hero');
+                const heroBg = document.getElementById('hero-bg');
 
                 // Check background type
                 if (promo.backgroundType === 'image' && promo.backgroundImage) {
-                    // Image background with overlay
-                    hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${promo.backgroundImage}')`;
-                    hero.style.backgroundSize = 'cover';
-                    hero.style.backgroundPosition = 'center';
-                    hero.style.backgroundRepeat = 'no-repeat';
+                    // Image background with blur effect
+                    heroBg.style.backgroundImage = `url('${promo.backgroundImage}')`;
+                    heroBg.style.backgroundSize = 'cover';
+                    heroBg.style.backgroundPosition = 'center';
+                    hero.classList.add('has-image-bg');
                 } else {
                     // Color/gradient background
                     hero.style.background = promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
