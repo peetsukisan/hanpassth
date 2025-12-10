@@ -283,6 +283,42 @@ const dbService = {
             console.error('Error deleting faq:', error);
             throw error;
         }
+    },
+
+    // ==================== SITE SETTINGS ====================
+
+    // Get site settings
+    async getSiteSettings() {
+        try {
+            const doc = await db.collection('siteSettings').doc('config').get();
+            if (doc.exists) {
+                return doc.data();
+            }
+            // Return default settings if not exists
+            return {
+                brandName: 'MyBrand',
+                logoUrl: '',
+                sectionTitles: {
+                    promotions: 'โปรโมชั่นพิเศษ',
+                    guides: 'ขั้นตอนการใช้งาน',
+                    faqs: 'ปัญหาที่พบบ่อย'
+                }
+            };
+        } catch (error) {
+            console.error('Error getting site settings:', error);
+            return null;
+        }
+    },
+
+    // Update site settings
+    async updateSiteSettings(data) {
+        try {
+            await db.collection('siteSettings').doc('config').set(data, { merge: true });
+            return data;
+        } catch (error) {
+            console.error('Error updating site settings:', error);
+            throw error;
+        }
     }
 };
 

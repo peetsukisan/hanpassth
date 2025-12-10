@@ -155,6 +155,11 @@ function initTabs() {
                 tab.classList.remove('active');
             });
             document.getElementById(`${tabId}-tab`).classList.add('active');
+
+            // Load settings when settings tab is opened
+            if (tabId === 'settings') {
+                loadSettings();
+            }
         });
     });
 }
@@ -1163,3 +1168,45 @@ window.updateFaqOrder = updateFaqOrder;
 window.updatePopupOrder = updatePopupOrder;
 window.updatePromoOrder = updatePromoOrder;
 window.updateGuideOrder = updateGuideOrder;
+
+// ==================== SITE SETTINGS ====================
+
+async function loadSettings() {
+    try {
+        const settings = await dbService.getSiteSettings();
+        if (settings) {
+            document.getElementById('brand-name').value = settings.brandName || 'MyBrand';
+            document.getElementById('logo-url').value = settings.logoUrl || '';
+            document.getElementById('title-promotions').value = settings.sectionTitles?.promotions || 'โปรโมชั่นพิเศษ';
+            document.getElementById('title-guides').value = settings.sectionTitles?.guides || 'ขั้นตอนการใช้งาน';
+            document.getElementById('title-faqs').value = settings.sectionTitles?.faqs || 'ปัญหาที่พบบ่อย';
+        }
+    } catch (error) {
+        console.error('Error loading settings:', error);
+    }
+}
+
+async function saveSettings(e) {
+    e.preventDefault();
+
+    const data = {
+        brandName: document.getElementById('brand-name').value.trim() || 'MyBrand',
+        logoUrl: document.getElementById('logo-url').value.trim(),
+        sectionTitles: {
+            promotions: document.getElementById('title-promotions').value.trim() || 'โปรโมชั่นพิเศษ',
+            guides: document.getElementById('title-guides').value.trim() || 'ขั้นตอนการใช้งาน',
+            faqs: document.getElementById('title-faqs').value.trim() || 'ปัญหาที่พบบ่อย'
+        }
+    };
+
+    try {
+        await dbService.updateSiteSettings(data);
+        showToast('บันทึกการตั้งค่าเรียบร้อย', 'success');
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        showToast('เกิดข้อผิดพลาดในการบันทึก', 'error');
+    }
+}
+
+window.loadSettings = loadSettings;
+window.saveSettings = saveSettings;

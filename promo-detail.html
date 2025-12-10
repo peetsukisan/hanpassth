@@ -117,7 +117,18 @@
 
                 // Update hero
                 const hero = document.getElementById('detail-hero');
-                hero.style.background = promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+
+                // Check background type
+                if (promo.backgroundType === 'image' && promo.backgroundImage) {
+                    // Image background with overlay
+                    hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${promo.backgroundImage}')`;
+                    hero.style.backgroundSize = 'cover';
+                    hero.style.backgroundPosition = 'center';
+                    hero.style.backgroundRepeat = 'no-repeat';
+                } else {
+                    // Color/gradient background
+                    hero.style.background = promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+                }
 
                 document.getElementById('hero-badge').textContent = promo.badge || 'EVENT';
                 document.getElementById('hero-title').textContent = promo.title;

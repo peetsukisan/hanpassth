@@ -46,6 +46,9 @@ let cardsPerView = 3;
 let autoPlayInterval = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Load site settings first
+    await loadSiteSettings();
+
     // Load data from Firebase
     await loadPromotions();
     await loadGuides();
@@ -60,6 +63,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize search
     initSearch();
 });
+
+// ==================== SITE SETTINGS ====================
+
+async function loadSiteSettings() {
+    try {
+        const settings = await dbService.getSiteSettings();
+        if (settings) {
+            // Update brand name
+            const brandEl = document.getElementById('brand-name-display');
+            if (brandEl) brandEl.textContent = settings.brandName || 'MyBrand';
+
+            // Update section titles
+            const guidesTitle = document.getElementById('guides-title');
+            if (guidesTitle) guidesTitle.textContent = settings.sectionTitles?.guides || 'ขั้นตอนการใช้งาน';
+
+            const faqsTitle = document.getElementById('faqs-title');
+            if (faqsTitle) faqsTitle.textContent = settings.sectionTitles?.faqs || 'ปัญหาที่พบบ่อย';
+
+            // Update page title
+            document.title = (settings.brandName || 'MyBrand') + ' - โปรโมชั่นและขั้นตอนการใช้งาน';
+        }
+    } catch (error) {
+        console.error('Error loading site settings:', error);
+    }
+}
 
 // ==================== DATA LOADING ====================
 
