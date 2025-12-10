@@ -1373,6 +1373,13 @@ a.step-card:hover .step-icon {
     transform: rotate(180deg);
 }
 
+/* Active FAQ question styling - highlighted background */
+.faq-item.active .faq-question {
+    background: linear-gradient(135deg, rgba(43, 74, 207, 0.08) 0%, rgba(43, 74, 207, 0.04) 100%);
+    color: var(--primary-blue);
+    border-bottom: 1px solid rgba(43, 74, 207, 0.1);
+}
+
 .faq-answer {
     max-height: 0;
     overflow: hidden;

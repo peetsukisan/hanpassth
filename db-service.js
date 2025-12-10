@@ -15,12 +15,8 @@ const dbService = {
                 results = results.filter(item => item.isActive === true);
             }
 
-            // Sort by createdAt or order
-            results.sort((a, b) => {
-                const aTime = a.createdAt?.toMillis?.() || 0;
-                const bTime = b.createdAt?.toMillis?.() || 0;
-                return bTime - aTime;
-            });
+            // Sort by order field
+            results.sort((a, b) => (a.order || 0) - (b.order || 0));
 
             return results;
         } catch (error) {
