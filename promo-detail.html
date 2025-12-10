@@ -118,44 +118,56 @@
                 // Update breadcrumb
                 document.getElementById('breadcrumb-title').textContent = promo.title;
 
-                // Update hero
+                // Check if hide header is enabled
                 const hero = document.getElementById('detail-hero');
                 const heroBg = document.getElementById('hero-bg');
+                const breadcrumb = document.querySelector('.breadcrumb');
 
-                // Check background type
-                if (promo.backgroundType === 'image' && promo.backgroundImage) {
-                    // Image background with blur effect
-                    heroBg.style.backgroundImage = `url('${promo.backgroundImage}')`;
-                    heroBg.style.backgroundSize = 'cover';
-                    heroBg.style.backgroundPosition = 'center';
-                    hero.classList.add('has-image-bg');
+                if (promo.hideHeader) {
+                    // Hide hero and breadcrumb, show only content
+                    hero.style.display = 'none';
+                    if (breadcrumb) breadcrumb.style.display = 'none';
                 } else {
-                    // Color/gradient background
-                    hero.style.background = promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+                    // Update hero
+
+                    // Check background type
+                    if (promo.backgroundType === 'image' && promo.backgroundImage) {
+                        // Image background with blur effect
+                        heroBg.style.backgroundImage = `url('${promo.backgroundImage}')`;
+                        heroBg.style.backgroundSize = 'cover';
+                        heroBg.style.backgroundPosition = 'center';
+                        hero.classList.add('has-image-bg');
+                    } else {
+                        // Color/gradient background
+                        hero.style.background = promo.backgroundColor || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+                    }
+
+                    document.getElementById('hero-badge').textContent = promo.badge || 'EVENT';
+                    document.getElementById('hero-title').textContent = promo.title;
+                    document.getElementById('hero-subtitle').textContent = promo.subtitle || '';
+
+                    // Date period
+                    if (promo.startDate || promo.endDate) {
+                        const period = `${promo.startDate || ''} ~ ${promo.endDate || ''}`;
+                        document.getElementById('hero-period').textContent = period;
+                    }
+
+                    // Text color
+                    if (promo.textColor === 'dark') {
+                        hero.classList.add('dark-text');
+                    }
+
+                    // Show action section
+                    document.getElementById('action-section').style.display = 'flex';
                 }
 
-                document.getElementById('hero-badge').textContent = promo.badge || 'EVENT';
-                document.getElementById('hero-title').textContent = promo.title;
-                document.getElementById('hero-subtitle').textContent = promo.subtitle || '';
-
-                // Date period
-                if (promo.startDate || promo.endDate) {
-                    const period = `${promo.startDate || ''} ~ ${promo.endDate || ''}`;
-                    document.getElementById('hero-period').textContent = period;
-                }
-
-                // Text color
-                if (promo.textColor === 'dark') {
-                    hero.classList.add('dark-text');
-                }
-
-                // Check if external link - redirect immediately
+                // Check if external link - redirect immediately (always check)
                 if (promo.contentType === 'link' && promo.externalUrl) {
                     window.location.href = promo.externalUrl;
                     return;
                 }
 
-                // Rich Content (from Quill editor)
+                // Rich Content (from Quill editor) - always show
                 if (promo.richContent && promo.richContent !== '<p><br></p>') {
                     document.getElementById('description-content').innerHTML = promo.richContent;
                 } else if (promo.description) {
@@ -164,21 +176,18 @@
                     document.getElementById('description-section').style.display = 'none';
                 }
 
-                // Dynamic sections
+                // Dynamic sections - always show
                 if (promo.sections && promo.sections.length > 0) {
                     const sectionsContainer = document.getElementById('dynamic-sections');
                     sectionsContainer.innerHTML = promo.sections.map(section => `
-                        <div class="detail-section">
-                            <h2 class="section-title">${section.title || ''}</h2>
-                            <div class="section-content">
-                                <p>${section.content || ''}</p>
-                            </div>
+                    <div class="detail-section">
+                        <h2 class="section-title">${section.title || ''}</h2>
+                        <div class="section-content">
+                            <p>${section.content || ''}</p>
                         </div>
-                    `).join('');
+                    </div>
+                `).join('');
                 }
-
-                // Show action section
-                document.getElementById('action-section').style.display = 'flex';
 
             } catch (error) {
                 console.error('Error loading promotion:', error);

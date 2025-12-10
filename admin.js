@@ -467,6 +467,7 @@ function openPromoModal(promoData = null) {
         document.getElementById('promo-start-date').value = promoData.startDate || '';
         document.getElementById('promo-end-date').value = promoData.endDate || '';
         document.getElementById('promo-active').checked = promoData.isActive !== false;
+        document.getElementById('promo-hide-header').checked = promoData.hideHeader || false;
 
         // Set background type
         if (promoData.backgroundImage) {
@@ -583,6 +584,7 @@ async function savePromotion(e) {
         startDate: document.getElementById('promo-start-date').value,
         endDate: document.getElementById('promo-end-date').value,
         isActive: document.getElementById('promo-active').checked,
+        hideHeader: document.getElementById('promo-hide-header').checked,
         sections: sections
     };
 
