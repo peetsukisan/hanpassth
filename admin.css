@@ -770,3 +770,25 @@ form {
 .form-actions {
     margin-top: 24px;
 }
+
+/* Form Sections (Modal) */
+.form-section {
+    background: var(--bg-light);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.form-section-title {
+    margin: 0 0 16px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+.form-section-hint {
+    margin: -8px 0 16px 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}

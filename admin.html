@@ -286,130 +286,149 @@
             </div>
             <form id="promo-form" class="modal-body" onsubmit="savePromotion(event)">
                 <input type="hidden" id="promo-id">
-                <div class="form-group">
-                    <label for="promo-title">ชื่อโปรโมชั่น *</label>
-                    <input type="text" id="promo-title" required placeholder="โปรโมชั่นสุดพิเศษ">
-                </div>
-                <div class="form-group">
-                    <label for="promo-subtitle">รายละเอียดย่อ</label>
-                    <input type="text" id="promo-subtitle" placeholder="รับเครดิตคืนสูงสุด 20%">
-                </div>
-                <div class="form-row">
+
+                <!-- ===== ข้อมูลพื้นฐาน ===== -->
+                <div class="form-section">
+                    <h3 class="form-section-title">📋 ข้อมูลพื้นฐาน</h3>
                     <div class="form-group">
-                        <label for="promo-badge">Badge Text</label>
-                        <input type="text" id="promo-badge" placeholder="EVENT">
+                        <label for="promo-title">ชื่อโปรโมชั่น *</label>
+                        <input type="text" id="promo-title" required placeholder="โปรโมชั่นสุดพิเศษ">
                     </div>
                     <div class="form-group">
-                        <label for="promo-badge-style">Badge Style</label>
-                        <select id="promo-badge-style">
-                            <option value="default">Default</option>
-                            <option value="light">Light</option>
+                        <label for="promo-subtitle">รายละเอียดย่อ</label>
+                        <input type="text" id="promo-subtitle" placeholder="รับเครดิตคืนสูงสุด 20%">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="promo-start-date">วันที่เริ่ม</label>
+                            <input type="date" id="promo-start-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="promo-end-date">วันที่สิ้นสุด</label>
+                            <input type="date" id="promo-end-date">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== การแสดงผล Banner (หน้าแรก + หน้ารายละเอียด) ===== -->
+                <div class="form-section">
+                    <h3 class="form-section-title">🖼️ การแสดงผล Banner</h3>
+                    <p class="form-section-hint">ใช้แสดงทั้ง Banner หน้าแรก และ Header หน้ารายละเอียด</p>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="promo-badge">Badge Text</label>
+                            <input type="text" id="promo-badge" placeholder="EVENT">
+                        </div>
+                        <div class="form-group">
+                            <label for="promo-badge-style">Badge Style</label>
+                            <select id="promo-badge-style">
+                                <option value="default">Default</option>
+                                <option value="light">Light</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Background Type Selection -->
+                    <div class="form-group">
+                        <label>พื้นหลัง</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="bg-type" id="bg-type-color" value="color" checked
+                                    onchange="toggleBgType()">
+                                <span>สีพื้น/Gradient</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="bg-type" id="bg-type-image" value="image"
+                                    onchange="toggleBgType()">
+                                <span>รูปภาพ</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Color Background -->
+                    <div class="form-group" id="bg-color-group">
+                        <label for="promo-bg">สีพื้นหลัง (CSS Gradient)</label>
+                        <input type="text" id="promo-bg"
+                            placeholder="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+                    </div>
+
+                    <!-- Image Background -->
+                    <div class="form-group" id="bg-image-group" style="display: none;">
+                        <label for="promo-bg-image">URL รูปภาพพื้นหลัง</label>
+                        <input type="text" id="promo-bg-image" placeholder="https://example.com/image.jpg">
+                        <small class="form-hint">ใช้ URL จาก Imgur, Google Drive, หรือ CDN อื่นๆ</small>
+                    </div>
+
+                    <!-- Display Mode -->
+                    <div class="form-group">
+                        <label for="promo-display-mode">รูปแบบการแสดงผล</label>
+                        <select id="promo-display-mode">
+                            <option value="text-overlay">แสดงข้อความบนรูป/พื้นหลัง</option>
+                            <option value="image-only">แสดงรูปอย่างเดียว (ไม่มีข้อความ)</option>
                         </select>
                     </div>
-                </div>
 
-                <!-- Background Type Selection -->
-                <div class="form-group">
-                    <label>พื้นหลัง</label>
-                    <div class="radio-group">
-                        <label class="radio-label">
-                            <input type="radio" name="bg-type" id="bg-type-color" value="color" checked
-                                onchange="toggleBgType()">
-                            <span>สีพื้น/Gradient</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="bg-type" id="bg-type-image" value="image"
-                                onchange="toggleBgType()">
-                            <span>รูปภาพ</span>
-                        </label>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="promo-card-type">ประเภทการ์ด</label>
+                            <select id="promo-card-type" disabled>
+                                <option value="banner">Banner (แบบ emart)</option>
+                            </select>
+                            <input type="hidden" id="promo-card-type-value" value="banner">
+                        </div>
+                        <div class="form-group">
+                            <label for="promo-text-color">สีตัวอักษร</label>
+                            <select id="promo-text-color">
+                                <option value="light">สีขาว</option>
+                                <option value="dark">สีเข้ม</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Color Background -->
-                <div class="form-group" id="bg-color-group">
-                    <label for="promo-bg">สีพื้นหลัง (CSS Gradient)</label>
-                    <input type="text" id="promo-bg" placeholder="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
-                </div>
+                <!-- ===== เมื่อคลิก Banner ===== -->
+                <div class="form-section">
+                    <h3 class="form-section-title">🔗 เมื่อคลิก Banner</h3>
 
-                <!-- Image Background -->
-                <div class="form-group" id="bg-image-group" style="display: none;">
-                    <label for="promo-bg-image">URL รูปภาพพื้นหลัง</label>
-                    <input type="text" id="promo-bg-image" placeholder="https://example.com/image.jpg">
-                    <small class="form-hint">ใช้ URL จาก Imgur, Google Drive, หรือ CDN อื่นๆ</small>
-                </div>
-
-                <!-- Display Mode -->
-                <div class="form-group">
-                    <label for="promo-display-mode">รูปแบบการแสดงผล</label>
-                    <select id="promo-display-mode">
-                        <option value="text-overlay">แสดงข้อความบนรูป/พื้นหลัง</option>
-                        <option value="image-only">แสดงรูปอย่างเดียว (ไม่มีข้อความ)</option>
-                    </select>
-                </div>
-
-                <div class="form-row">
+                    <!-- Content Type Selection -->
                     <div class="form-group">
-                        <label for="promo-card-type">ประเภทการ์ด</label>
-                        <select id="promo-card-type" disabled>
-                            <option value="banner">Banner (แบบ emart)</option>
-                        </select>
-                        <input type="hidden" id="promo-card-type-value" value="banner">
+                        <label>ประเภทเนื้อหา</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="content-type" id="content-type-page" value="page" checked
+                                    onchange="toggleContentType()">
+                                <span>สร้างหน้าเนื้อหาเอง</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="content-type" id="content-type-link" value="link"
+                                    onchange="toggleContentType()">
+                                <span>ลิ้งค์ไปที่อื่น (External URL)</span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="promo-text-color">สีตัวอักษร</label>
-                        <select id="promo-text-color">
-                            <option value="light">สีขาว</option>
-                            <option value="dark">สีเข้ม</option>
-                        </select>
+
+                    <!-- External Link (hidden by default) -->
+                    <div class="form-group" id="external-link-group" style="display: none;">
+                        <label for="promo-external-url">URL ภายนอก</label>
+                        <input type="url" id="promo-external-url" placeholder="https://example.com/page">
+                        <small class="form-hint">เมื่อคลิกจากหน้าหลักจะเปิดลิ้งค์นี้แทน</small>
+                    </div>
+
+                    <!-- Content Editor (visible when content-type is page) -->
+                    <div id="content-editor-group">
+                        <!-- Sections with Rich Editor -->
+                        <div class="form-group sections-group">
+                            <label>Sections (เนื้อหาในหน้ารายละเอียด)</label>
+                            <div id="promo-sections"></div>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="addPromoSection()">
+                                + เพิ่ม Section
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Content Type Selection -->
-                <div class="form-group">
-                    <label>ประเภทเนื้อหา (เมื่อคลิกจากหน้าหลัก)</label>
-                    <div class="radio-group">
-                        <label class="radio-label">
-                            <input type="radio" name="content-type" id="content-type-page" value="page" checked
-                                onchange="toggleContentType()">
-                            <span>สร้างหน้าเนื้อหาเอง</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="content-type" id="content-type-link" value="link"
-                                onchange="toggleContentType()">
-                            <span>ลิ้งค์ไปที่อื่น (External URL)</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- External Link (hidden by default) -->
-                <div class="form-group" id="external-link-group" style="display: none;">
-                    <label for="promo-external-url">URL ภายนอก</label>
-                    <input type="url" id="promo-external-url" placeholder="https://example.com/page">
-                    <small class="form-hint">เมื่อคลิกจากหน้าหลักจะเปิดลิ้งค์นี้แทน</small>
-                </div>
-
-                <!-- Content Editor (visible when content-type is page) -->
-                <div id="content-editor-group">
-                    <!-- Sections with Rich Editor -->
-                    <div class="form-group sections-group">
-                        <label>Sections (เนื้อหาในหน้ารายละเอียด)</label>
-                        <div id="promo-sections"></div>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="addPromoSection()">
-                            + เพิ่ม Section
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="promo-start-date">วันที่เริ่ม</label>
-                        <input type="date" id="promo-start-date">
-                    </div>
-                    <div class="form-group">
-                        <label for="promo-end-date">วันที่สิ้นสุด</label>
-                        <input type="date" id="promo-end-date">
-                    </div>
-                </div>
+                <!-- ===== การเปิดใช้งาน ===== -->
                 <div class="form-group">
                     <label class="checkbox-label">
                         <input type="checkbox" id="promo-active" checked>
