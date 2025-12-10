@@ -1393,24 +1393,19 @@ a.step-card:hover .step-icon {
 .faq-answer-content {
     padding: 16px 24px 24px;
     color: var(--text-dark);
-    line-height: 1.6;
+    line-height: 1.45;
     text-align: left;
     font-size: 0.95rem;
 }
 
-/* Quill editor content - no extra spacing between p tags */
+/* Quill editor content - tight spacing like the editor */
 .faq-answer-content p {
     margin: 0;
+    padding: 0;
 }
 
-.faq-answer-content p:last-child {
-    margin-bottom: 0;
-}
-
-/* Only add spacing for empty paragraphs (intentional line breaks) */
-.faq-answer-content p:empty,
-.faq-answer-content p br:only-child {
-    min-height: 1em;
+.faq-answer-content p+p {
+    margin-top: 0;
 }
 
 .faq-answer-content strong,
