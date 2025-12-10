@@ -571,6 +571,7 @@ async function savePromotion(e) {
         subtitle: document.getElementById('promo-subtitle').value,
         badge: document.getElementById('promo-badge').value || 'EVENT',
         badgeStyle: document.getElementById('promo-badge-style').value,
+        backgroundType: isImageBg ? 'image' : 'color',
         backgroundColor: isImageBg ? '' : (document.getElementById('promo-bg').value || 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'),
         backgroundImage: isImageBg ? document.getElementById('promo-bg-image').value : '',
         displayMode: document.getElementById('promo-display-mode').value,
