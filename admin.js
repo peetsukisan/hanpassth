@@ -107,7 +107,14 @@ function initFaqQuillEditor() {
     const wrapper = document.getElementById('faq-answer-wrapper');
     if (!wrapper || typeof Quill === 'undefined') return;
 
-    // Completely remove old editor and create new one
+    // Remove ALL existing toolbars (Quill creates them as siblings before the container)
+    const parent = wrapper.parentElement;
+    if (parent) {
+        const existingToolbars = parent.querySelectorAll('.ql-toolbar');
+        existingToolbars.forEach(toolbar => toolbar.remove());
+    }
+
+    // Clear the wrapper and recreate editor container
     quillFaqEditor = null;
     wrapper.innerHTML = '<div id="faq-answer-editor"></div>';
 
