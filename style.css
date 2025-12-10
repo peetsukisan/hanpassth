@@ -1391,25 +1391,31 @@ a.step-card:hover .step-icon {
 }
 
 .faq-answer-content {
-    padding: 0 24px 20px;
-    color: var(--text-gray);
-    line-height: 1.8;
+    padding: 16px 24px 24px;
+    color: var(--text-dark);
+    line-height: 1.7;
     text-align: left;
+    font-size: 0.95rem;
 }
 
-/* Rich content styling for FAQ answers */
+/* Quill editor content compatibility */
 .faq-answer-content p {
-    margin: 0 0 12px;
+    margin: 0 0 0.8em;
+    min-height: 1.4em;
 }
 
 .faq-answer-content p:last-child {
     margin-bottom: 0;
 }
 
+.faq-answer-content p br {
+    content: "";
+}
+
 .faq-answer-content strong,
 .faq-answer-content b {
-    font-weight: 600;
-    color: var(--text-dark);
+    font-weight: 700;
+    color: var(--primary-blue);
 }
 
 .faq-answer-content em,
@@ -1421,14 +1427,20 @@ a.step-card:hover .step-icon {
     text-decoration: underline;
 }
 
+/* Lists - matching Quill */
 .faq-answer-content ul,
 .faq-answer-content ol {
-    margin: 12px 0;
-    padding-left: 24px;
+    margin: 0.5em 0;
+    padding-left: 1.5em;
 }
 
 .faq-answer-content li {
-    margin-bottom: 6px;
+    margin-bottom: 0.3em;
+    padding-left: 0.3em;
+}
+
+.faq-answer-content li::marker {
+    color: var(--primary-blue);
 }
 
 .faq-answer-content a {
@@ -1444,18 +1456,25 @@ a.step-card:hover .step-icon {
 .faq-answer-content h2,
 .faq-answer-content h3 {
     color: var(--text-dark);
-    font-weight: 600;
-    margin: 16px 0 8px;
+    font-weight: 700;
+    margin: 1em 0 0.5em;
+}
+
+.faq-answer-content h1:first-child,
+.faq-answer-content h2:first-child,
+.faq-answer-content h3:first-child,
+.faq-answer-content p:first-child {
+    margin-top: 0;
 }
 
 .faq-answer-content h1 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
 }
 
 .faq-answer-content h2 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
 }
 
 .faq-answer-content h3 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
