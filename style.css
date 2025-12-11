@@ -1474,3 +1474,123 @@ a.step-card:hover .step-icon {
 .faq-answer-content h3 {
     font-size: 1.05rem;
 }
+
+/* ===== Bottom Navigation Bar (Mobile App Style) ===== */
+.bottom-nav {
+    display: none;
+    /* Hidden by default on desktop */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-white);
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    padding: 8px 0;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-decoration: none;
+    color: var(--text-gray);
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    position: relative;
+}
+
+.bottom-nav-item svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.8;
+    transition: var(--transition);
+}
+
+.bottom-nav-item span {
+    white-space: nowrap;
+}
+
+.bottom-nav-item:hover,
+.bottom-nav-item.active {
+    color: var(--primary-blue);
+}
+
+.bottom-nav-item.active svg {
+    stroke: var(--primary-blue);
+    fill: rgba(43, 74, 207, 0.1);
+}
+
+.bottom-nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: var(--primary-blue);
+    border-radius: 0 0 3px 3px;
+}
+
+/* Mobile styles - show bottom nav */
+@media (max-width: 768px) {
+    .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    /* Hide header navigation on mobile */
+    .nav-menu {
+        display: none;
+    }
+
+    /* Add padding to body for bottom nav */
+    body {
+        padding-bottom: 80px;
+    }
+
+    /* Adjust footer for bottom nav */
+    .footer {
+        margin-bottom: 0;
+        padding-bottom: calc(30px + 70px);
+        /* Extra space for bottom nav */
+    }
+
+    /* Move messenger button above bottom nav */
+    .messenger-btn {
+        bottom: calc(80px + 20px);
+    }
+
+    /* Adjust header for mobile */
+    .header-container {
+        justify-content: center;
+    }
+
+    .logo {
+        flex: 1;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 380px) {
+    .bottom-nav-item {
+        padding: 6px 4px;
+    }
+
+    .bottom-nav-item span {
+        font-size: 0.65rem;
+    }
+
+    .bottom-nav-item svg {
+        width: 22px;
+        height: 22px;
+    }
+}

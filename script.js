@@ -41,6 +41,7 @@ const cardVisuals = {
 
 let promotions = [];
 let guides = [];
+let faqs = [];
 let currentIndex = 0;
 let cardsPerView = 3;
 let autoPlayInterval = null;
@@ -62,6 +63,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize search
     initSearch();
+
+    // Initialize bottom navigation (mobile)
+    initBottomNav();
 });
 
 // ==================== SITE SETTINGS ====================
@@ -121,7 +125,7 @@ async function loadGuides() {
 
 async function loadFaqs() {
     try {
-        const faqs = await dbService.getFaqs(true); // Only active
+        faqs = await dbService.getFaqs(true); // Only active - store in global for search
         renderFaqs(faqs);
     } catch (error) {
         console.error('Error loading FAQs:', error);
@@ -169,6 +173,40 @@ function toggleFaq(index) {
     if (faqItem) {
         faqItem.classList.toggle('active');
     }
+}
+
+// Scroll to FAQ and open it (used by search)
+function scrollToFaq(index) {
+    // Close search dropdown
+    const dropdown = document.getElementById('search-dropdown');
+    if (dropdown) dropdown.style.display = 'none';
+
+    // Scroll to FAQ section first
+    const faqSection = document.getElementById('faq');
+    if (faqSection) {
+        const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+        const targetPosition = faqSection.offsetTop - headerHeight - 20;
+
+        window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+        });
+    }
+
+    // Wait for scroll then open the FAQ item
+    setTimeout(() => {
+        const faqItem = document.getElementById(`faq-${index}`);
+        if (faqItem) {
+            // Close any open FAQs first
+            document.querySelectorAll('.faq-item.active').forEach(item => {
+                item.classList.remove('active');
+            });
+            // Open this one
+            faqItem.classList.add('active');
+            // Scroll to the specific item
+            faqItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 500);
 }
 
 // ==================== RENDERING ====================
@@ -512,6 +550,12 @@ function initSearch() {
             (g.description && g.description.toLowerCase().includes(q))
         ).slice(0, 3); // Max 3 results
 
+        // Search in FAQs
+        const matchedFaqs = faqs.filter(f =>
+            (f.question && f.question.toLowerCase().includes(q)) ||
+            (f.answer && f.answer.toLowerCase().includes(q))
+        ).slice(0, 3); // Max 3 results
+
         // Build dropdown HTML
         let html = '';
 
@@ -539,6 +583,23 @@ function initSearch() {
                         <div class="result-text">
                             <strong>${g.title}</strong>
                             <small>${g.description || ''}</small>
+                        </div>
+                    </a>
+                `;
+            });
+        }
+
+        if (matchedFaqs.length > 0) {
+            html += '<div class="search-category">ปัญหาที่พบบ่อย</div>';
+            matchedFaqs.forEach((f, idx) => {
+                // Find the original index in faqs array
+                const originalIndex = faqs.indexOf(f);
+                html += `
+                    <a href="#faq" class="search-result-item" onclick="scrollToFaq(${originalIndex}); return false;">
+                        <span class="result-icon">❓</span>
+                        <div class="result-text">
+                            <strong>${f.question}</strong>
+                            <small>${f.answer ? f.answer.substring(0, 50) + '...' : ''}</small>
                         </div>
                     </a>
                 `;
@@ -614,4 +675,90 @@ function initStepAnimations() {
     });
 }
 
+// ==================== BOTTOM NAVIGATION ====================
 
+function initBottomNav() {
+    const bottomNav = document.getElementById('bottom-nav');
+    if (!bottomNav) return;
+
+    const navItems = bottomNav.querySelectorAll('.bottom-nav-item');
+    const sections = ['top', 'promotions', 'how-to-use', 'faq'];
+
+    // Handle click events
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            const target = item.getAttribute('data-target');
+
+            // Update active state
+            navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+
+            // Scroll to section
+            if (target === 'top') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                const section = document.getElementById(target);
+                if (section) {
+                    const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+                    const targetPosition = section.offsetTop - headerHeight - 10;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            }
+        });
+    });
+
+    // Update active state on scroll
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            updateActiveNavItem(navItems, sections);
+        }, 50);
+    });
+
+    // Initial check
+    updateActiveNavItem(navItems, sections);
+}
+
+function updateActiveNavItem(navItems, sections) {
+    const scrollPosition = window.scrollY;
+    const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+    const windowHeight = window.innerHeight;
+
+    // Check if at top
+    if (scrollPosition < 100) {
+        setActiveNavItem(navItems, 'top');
+        return;
+    }
+
+    // Find current section
+    for (let i = sections.length - 1; i >= 0; i--) {
+        const sectionId = sections[i];
+        if (sectionId === 'top') continue;
+
+        const section = document.getElementById(sectionId);
+        if (section) {
+            const sectionTop = section.offsetTop - headerHeight - 50;
+            if (scrollPosition >= sectionTop) {
+                setActiveNavItem(navItems, sectionId);
+                return;
+            }
+        }
+    }
+
+    // Default to top
+    setActiveNavItem(navItems, 'top');
+}
+
+function setActiveNavItem(navItems, targetId) {
+    navItems.forEach(item => {
+        const itemTarget = item.getAttribute('data-target');
+        if (itemTarget === targetId) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
