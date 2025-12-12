@@ -1594,3 +1594,124 @@ a.step-card:hover .step-icon {
         height: 22px;
     }
 }
+
+/* ===== View Toggle Button ===== */
+.view-toggle-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(43, 74, 207, 0.4);
+    transition: var(--transition);
+    z-index: 999;
+}
+
+.view-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(43, 74, 207, 0.5);
+}
+
+.view-toggle-btn svg {
+    stroke: white;
+}
+
+/* ===== Forced Mobile View Mode ===== */
+/* When body has .mobile-view-mode class, force mobile layout on any screen size */
+
+.mobile-view-mode .bottom-nav {
+    display: flex !important;
+    justify-content: space-around;
+}
+
+.mobile-view-mode .nav-menu {
+    display: none !important;
+}
+
+.mobile-view-mode {
+    padding-bottom: 80px;
+}
+
+.mobile-view-mode .footer {
+    padding-bottom: calc(30px + 70px);
+}
+
+.mobile-view-mode .messenger-btn {
+    bottom: calc(80px + 20px);
+}
+
+.mobile-view-mode .view-toggle-btn {
+    bottom: calc(80px + 20px);
+    left: 20px;
+}
+
+.mobile-view-mode .header-container {
+    justify-content: center;
+}
+
+.mobile-view-mode .logo {
+    flex: 1;
+}
+
+/* Mobile phone frame wrapper for desktop when in mobile mode */
+@media (min-width: 769px) {
+
+    .mobile-view-mode .carousel-section,
+    .mobile-view-mode .how-to-section,
+    .mobile-view-mode .faq-section,
+    .mobile-view-mode .hero-section {
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .mobile-view-mode .header {
+        max-width: 480px;
+        margin: 0 auto;
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+    }
+
+    .mobile-view-mode .footer {
+        max-width: 480px;
+        margin-left: auto;
+        margin-right: auto;
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+    }
+
+    .mobile-view-mode .bottom-nav {
+        max-width: 480px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 1px solid var(--border-color);
+        border-right: 1px solid var(--border-color);
+    }
+
+    .mobile-view-mode .steps-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-view-mode .promo-card {
+        min-height: 200px;
+    }
+
+    .mobile-view-mode .banner-content .card-title {
+        font-size: 1.3rem;
+    }
+}
+
+/* Hide toggle button on actual mobile devices - they don't need it */
+@media (max-width: 768px) {
+    .view-toggle-btn {
+        display: none;
+    }
+}

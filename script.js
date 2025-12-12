@@ -47,6 +47,9 @@ let cardsPerView = 3;
 let autoPlayInterval = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize mobile view toggle (check saved preference)
+    initMobileViewToggle();
+
     // Load site settings first
     await loadSiteSettings();
 
@@ -761,4 +764,56 @@ function setActiveNavItem(navItems, targetId) {
             item.classList.remove('active');
         }
     });
+}
+
+// ==================== MOBILE VIEW TOGGLE ====================
+
+// Toggle between desktop and mobile view
+function toggleMobileView() {
+    const body = document.body;
+    const toggleBtn = document.getElementById('view-toggle-btn');
+    const isMobileMode = body.classList.toggle('mobile-view-mode');
+
+    // Update button icons
+    if (toggleBtn) {
+        const mobileIcon = toggleBtn.querySelector('.icon-mobile');
+        const desktopIcon = toggleBtn.querySelector('.icon-desktop');
+
+        if (isMobileMode) {
+            mobileIcon.style.display = 'none';
+            desktopIcon.style.display = 'block';
+            toggleBtn.title = 'สลับเป็นโหมดเดสก์ท็อป';
+        } else {
+            mobileIcon.style.display = 'block';
+            desktopIcon.style.display = 'none';
+            toggleBtn.title = 'สลับเป็นโหมดมือถือ';
+        }
+    }
+
+    // Save preference to localStorage
+    localStorage.setItem('mobileViewMode', isMobileMode ? 'true' : 'false');
+
+    // Re-initialize bottom nav if switching to mobile mode
+    if (isMobileMode) {
+        initBottomNav();
+    }
+}
+
+// Check and apply saved mobile view preference on page load
+function initMobileViewToggle() {
+    const savedMode = localStorage.getItem('mobileViewMode');
+    const toggleBtn = document.getElementById('view-toggle-btn');
+
+    if (savedMode === 'true') {
+        document.body.classList.add('mobile-view-mode');
+
+        // Update button icons
+        if (toggleBtn) {
+            const mobileIcon = toggleBtn.querySelector('.icon-mobile');
+            const desktopIcon = toggleBtn.querySelector('.icon-desktop');
+            mobileIcon.style.display = 'none';
+            desktopIcon.style.display = 'block';
+            toggleBtn.title = 'สลับเป็นโหมดเดสก์ท็อป';
+        }
+    }
 }
