@@ -1654,13 +1654,50 @@ a.step-card:hover .step-icon {
     display: block;
 }
 
+/* Top bar - outside pink box */
+.popup-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px;
+    margin-bottom: 4px;
+}
+
+.popup-today {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+.popup-today input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-blue);
+}
+
+.popup-close-x {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--text-gray);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 8px;
+}
+
+.popup-close-x:hover {
+    color: var(--text-dark);
+}
+
 .popup-modal {
     background: linear-gradient(135deg, #ffe8f0 0%, #ffeee5 50%, #fff5e6 100%);
     border-radius: 16px;
     padding: 16px;
     position: relative;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    min-height: 180px;
 }
 
 .popup-header {
