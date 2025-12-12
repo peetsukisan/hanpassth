@@ -1637,14 +1637,15 @@ a.step-card:hover .step-icon {
     display: block;
 }
 
-/* Popup container - bottom positioned, full width */
+/* Popup container - same width as bottom nav */
 .popup-container {
     display: none;
     position: fixed;
     bottom: 70px;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    max-width: 480px;
     padding: 0;
     z-index: 9998;
 }
