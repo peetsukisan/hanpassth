@@ -768,12 +768,12 @@ function setActiveNavItem(navItems, targetId) {
 let bottomBannerData = [];
 let currentBottomBannerIndex = 0;
 
-// Load and show bottom banner from popups
-async function loadBottomBanner() {
-    const hideUntil = localStorage.getItem('bottomBannerHideUntil');
+// Load and show popup overlay modal
+async function loadPopup() {
+    const hideUntil = localStorage.getItem('popupHideUntil');
     const now = new Date().getTime();
 
-    // Check if banner should be hidden
+    // Check if popup should be hidden
     if (hideUntil && now < parseInt(hideUntil)) {
         return;
     }
@@ -783,58 +783,61 @@ async function loadBottomBanner() {
         const popups = await dbService.getPopups(true);
         if (popups && popups.length > 0) {
             bottomBannerData = popups;
-            renderBottomBanner();
+            renderPopup();
         }
     } catch (error) {
-        console.error('Error loading bottom banner:', error);
+        console.error('Error loading popup:', error);
     }
 }
 
-function renderBottomBanner() {
-    const banner = document.getElementById('bottom-banner');
-    const slidesContainer = document.getElementById('bottom-banner-slides');
-    const paginationContainer = document.getElementById('bottom-banner-pagination');
+function renderPopup() {
+    const overlay = document.getElementById('popup-overlay');
+    const slidesContainer = document.getElementById('popup-slides');
+    const paginationContainer = document.getElementById('popup-pagination');
 
-    if (!banner || !slidesContainer || bottomBannerData.length === 0) return;
+    if (!overlay || !slidesContainer || bottomBannerData.length === 0) return;
 
-    // Render slides - text on left, image on right
+    // Render slides - image with text below
     slidesContainer.innerHTML = bottomBannerData.map((popup, i) => `
-        <div class="bottom-banner-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
-            <div class="bottom-banner-slide-text">
-                <h4>${popup.title || 'โปรโมชั่นพิเศษ'}</h4>
-                <h3>${popup.heading || popup.message || ''}</h3>
+        <div class="popup-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+            ${popup.image ? `
+                <div class="popup-slide-image">
+                    <img src="${popup.image}" alt="${popup.title || 'Promo'}">
+                </div>
+            ` : ''}
+            <div class="popup-slide-text">
+                <h3>${popup.title || popup.heading || ''}</h3>
                 <p>${popup.message || ''}</p>
             </div>
-            ${popup.image ? `<img src="${popup.image}" alt="${popup.title || 'Banner'}">` : ''}
         </div>
     `).join('');
 
     // Render pagination as "1/3" format
     if (bottomBannerData.length > 1) {
         paginationContainer.innerHTML = `
-            <span class="bottom-banner-page-info">
-                <span id="banner-current-page">1</span>/${bottomBannerData.length}
+            <span class="popup-page-info">
+                <span id="popup-current-page">1</span>/${bottomBannerData.length}
             </span>
         `;
     } else {
         paginationContainer.innerHTML = '';
     }
 
-    // Show banner
-    banner.classList.add('show');
+    // Show popup
+    overlay.classList.add('show');
 
     // Auto-slide if multiple slides
     if (bottomBannerData.length > 1) {
         setInterval(() => {
             currentBottomBannerIndex = (currentBottomBannerIndex + 1) % bottomBannerData.length;
-            updateBottomBannerSlide();
+            updatePopupSlide();
         }, 5000);
     }
 }
 
-function updateBottomBannerSlide() {
-    const slides = document.querySelectorAll('.bottom-banner-slide');
-    const pageInfo = document.getElementById('banner-current-page');
+function updatePopupSlide() {
+    const slides = document.querySelectorAll('.popup-slide');
+    const pageInfo = document.getElementById('popup-current-page');
 
     slides.forEach((slide, i) => {
         slide.classList.toggle('active', i === currentBottomBannerIndex);
@@ -845,27 +848,22 @@ function updateBottomBannerSlide() {
     }
 }
 
-function goToBottomBannerSlide(index) {
-    currentBottomBannerIndex = index;
-    updateBottomBannerSlide();
-}
+function closePopup() {
+    const overlay = document.getElementById('popup-overlay');
+    const todayCheck = document.getElementById('popup-today-check');
 
-function closeBottomBanner() {
-    const banner = document.getElementById('bottom-banner');
-    const todayCheck = document.getElementById('bottom-banner-today-check');
-
-    if (banner) {
-        banner.classList.remove('show');
+    if (overlay) {
+        overlay.classList.remove('show');
 
         // Check if "today" checkbox is checked - hide for 1 day
         if (todayCheck && todayCheck.checked) {
             const hideUntil = new Date().getTime() + (24 * 60 * 60 * 1000);
-            localStorage.setItem('bottomBannerHideUntil', hideUntil);
+            localStorage.setItem('popupHideUntil', hideUntil);
         }
     }
 }
 
-// Initialize bottom banner after page loads
+// Initialize popup after page loads
 setTimeout(() => {
-    loadBottomBanner();
+    loadPopup();
 }, 2000);
