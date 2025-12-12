@@ -1686,21 +1686,38 @@ a.step-card:hover .step-icon {
 }
 
 /* ===== Bottom Banner Popup (GS25 Style) ===== */
-.popup-overlay {
+
+/* Dark backdrop - full screen */
+.popup-backdrop {
     display: none;
-    position: fixed !important;
-    bottom: 70px !important;
-    top: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 9997;
+}
+
+.popup-backdrop.show {
+    display: block;
+}
+
+/* Popup container - bottom positioned */
+.popup-container {
+    display: none;
+    position: fixed;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
     max-width: 460px;
     padding: 0 10px;
-    z-index: 9998 !important;
+    z-index: 9998;
 }
 
-.popup-overlay.show {
-    display: block !important;
+.popup-container.show {
+    display: block;
 }
 
 .popup-modal {

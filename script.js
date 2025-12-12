@@ -791,11 +791,12 @@ async function loadPopup() {
 }
 
 function renderPopup() {
-    const overlay = document.getElementById('popup-overlay');
+    const container = document.getElementById('popup-container');
+    const backdrop = document.getElementById('popup-backdrop');
     const slidesContainer = document.getElementById('popup-slides');
     const paginationContainer = document.getElementById('popup-pagination');
 
-    if (!overlay || !slidesContainer || bottomBannerData.length === 0) return;
+    if (!container || !slidesContainer || bottomBannerData.length === 0) return;
 
     // Render slides - text on left, image on right
     slidesContainer.innerHTML = bottomBannerData.map((popup, i) => `
@@ -824,8 +825,9 @@ function renderPopup() {
         paginationContainer.innerHTML = '';
     }
 
-    // Show popup
-    overlay.classList.add('show');
+    // Show popup and backdrop
+    container.classList.add('show');
+    if (backdrop) backdrop.classList.add('show');
 
     // Auto-slide if multiple slides
     if (bottomBannerData.length > 1) {
@@ -850,17 +852,21 @@ function updatePopupSlide() {
 }
 
 function closePopup() {
-    const overlay = document.getElementById('popup-overlay');
+    const container = document.getElementById('popup-container');
+    const backdrop = document.getElementById('popup-backdrop');
     const todayCheck = document.getElementById('popup-today-check');
 
-    if (overlay) {
-        overlay.classList.remove('show');
+    if (container) {
+        container.classList.remove('show');
+    }
+    if (backdrop) {
+        backdrop.classList.remove('show');
+    }
 
-        // Check if "today" checkbox is checked - hide for 1 day
-        if (todayCheck && todayCheck.checked) {
-            const hideUntil = new Date().getTime() + (24 * 60 * 60 * 1000);
-            localStorage.setItem('popupHideUntil', hideUntil);
-        }
+    // Check if "today" checkbox is checked - hide for 1 day
+    if (todayCheck && todayCheck.checked) {
+        const hideUntil = new Date().getTime() + (24 * 60 * 60 * 1000);
+        localStorage.setItem('popupHideUntil', hideUntil);
     }
 }
 
