@@ -1668,36 +1668,36 @@ a.step-card:hover .step-icon {
     align-items: center;
     gap: 6px;
     font-size: 0.85rem;
-    color: var(--text-dark);
+    color: white;
     cursor: pointer;
 }
 
 .popup-today input {
     width: 16px;
     height: 16px;
-    accent-color: var(--primary-blue);
+    accent-color: white;
 }
 
 .popup-close-x {
     background: none;
     border: none;
     font-size: 1.8rem;
-    color: var(--text-gray);
+    color: white;
     cursor: pointer;
     line-height: 1;
     padding: 0 8px;
 }
 
 .popup-close-x:hover {
-    color: var(--text-dark);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .popup-modal {
-    background: linear-gradient(135deg, #ffe8f0 0%, #ffeee5 50%, #fff5e6 100%);
+    background: transparent;
     border-radius: 16px;
-    padding: 16px;
+    padding: 0;
     position: relative;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
 }
 
 .popup-header {
@@ -1784,26 +1784,29 @@ a.step-card:hover .step-icon {
 
 .popup-slide-image {
     width: 100%;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
 }
 
 .popup-slide-image img {
     width: 100%;
     height: auto;
-    max-height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
+    display: block;
+    border-radius: 16px;
 }
 
 .popup-pagination {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     gap: 4px;
-    margin-top: 12px;
-    font-size: 0.75rem;
-    color: var(--text-gray);
+    font-size: 0.8rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 4px 10px;
+    border-radius: 12px;
 }
 
 .popup-page-info {
