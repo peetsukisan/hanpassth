@@ -1667,21 +1667,22 @@ a.step-card:hover .step-icon {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .popup-today {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-gray);
     cursor: pointer;
 }
 
 .popup-today input {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-blue);
 }
 
 .popup-close {
@@ -1711,17 +1712,15 @@ a.step-card:hover .step-icon {
 .popup-slide {
     flex: 0 0 100%;
     display: none;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 16px !important;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .popup-slide.active {
-    display: flex !important;
+    display: flex;
 }
 
 .popup-slide-text {
-    flex: 1;
     text-align: left;
 }
 
@@ -1737,7 +1736,7 @@ a.step-card:hover .step-icon {
     font-weight: 700;
     color: var(--text-dark);
     line-height: 1.35;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .popup-slide-text p {
@@ -1747,20 +1746,16 @@ a.step-card:hover .step-icon {
 }
 
 .popup-slide-image {
-    width: 45%;
-    max-width: 180px;
-    flex-shrink: 0;
+    width: 100%;
     border-radius: 12px;
-    overflow: visible;
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
+    overflow: hidden;
 }
 
 .popup-slide-image img {
     width: 100%;
     height: auto;
-    object-fit: contain;
+    max-height: 200px;
+    object-fit: cover;
     border-radius: 8px;
 }
 
