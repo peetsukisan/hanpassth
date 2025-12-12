@@ -1758,13 +1758,13 @@ a.step-card:hover .step-icon {
 .popup-slide {
     flex: 0 0 100%;
     display: none;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 16px !important;
 }
 
 .popup-slide.active {
-    display: flex;
+    display: flex !important;
 }
 
 .popup-slide-text {
@@ -1780,7 +1780,7 @@ a.step-card:hover .step-icon {
 }
 
 .popup-slide-text h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-dark);
     line-height: 1.35;
@@ -1794,9 +1794,11 @@ a.step-card:hover .step-icon {
 }
 
 .popup-slide-image {
-    width: 100px;
-    height: 100px;
-    flex-shrink: 0;
+    width: 90px !important;
+    height: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+    flex-shrink: 0 !important;
     border-radius: 12px;
     overflow: hidden;
 }
