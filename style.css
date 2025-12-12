@@ -704,8 +704,8 @@ body {
 .step-card {
     display: block;
     background: var(--bg-white);
-    border-radius: 20px;
-    padding: 30px 24px;
+    border-radius: 16px;
+    padding: 20px 12px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     position: relative;
     transition: var(--transition);
@@ -713,6 +713,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.04);
     text-decoration: none;
     color: inherit;
+    min-width: 0;
 }
 
 .step-card:hover {
