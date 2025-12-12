@@ -797,18 +797,19 @@ function renderPopup() {
 
     if (!overlay || !slidesContainer || bottomBannerData.length === 0) return;
 
-    // Render slides - image with text below
+    // Render slides - text on left, image on right
     slidesContainer.innerHTML = bottomBannerData.map((popup, i) => `
         <div class="popup-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+            <div class="popup-slide-text">
+                <h4>${popup.subtitle || ''}</h4>
+                <h3>${popup.title || popup.heading || ''}</h3>
+                <p>${popup.message || ''}</p>
+            </div>
             ${popup.image ? `
                 <div class="popup-slide-image">
                     <img src="${popup.image}" alt="${popup.title || 'Promo'}">
                 </div>
             ` : ''}
-            <div class="popup-slide-text">
-                <h3>${popup.title || popup.heading || ''}</h3>
-                <p>${popup.message || ''}</p>
-            </div>
         </div>
     `).join('');
 

@@ -1685,33 +1685,29 @@ a.step-card:hover .step-icon {
     }
 }
 
-/* ===== Popup Overlay Modal ===== */
+/* ===== Bottom Banner Popup (GS25 Style) ===== */
 .popup-overlay {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.65);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 460px;
+    padding: 0 10px;
+    z-index: 998;
 }
 
 .popup-overlay.show {
-    display: flex;
+    display: block;
 }
 
 .popup-modal {
     background: linear-gradient(135deg, #ffe8f0 0%, #ffeee5 50%, #fff5e6 100%);
     border-radius: 16px;
     padding: 16px;
-    width: 100%;
-    max-width: 360px;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
 .popup-header {
@@ -1736,10 +1732,10 @@ a.step-card:hover .step-icon {
 }
 
 .popup-close {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.08);
     border: none;
     cursor: pointer;
     display: flex;
@@ -1750,7 +1746,7 @@ a.step-card:hover .step-icon {
 }
 
 .popup-close:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.15);
     color: var(--text-dark);
 }
 
@@ -1762,19 +1758,47 @@ a.step-card:hover .step-icon {
 .popup-slide {
     flex: 0 0 100%;
     display: none;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
 }
 
 .popup-slide.active {
     display: flex;
 }
 
+.popup-slide-text {
+    flex: 1;
+    text-align: left;
+}
+
+.popup-slide-text h4 {
+    font-size: 0.7rem;
+    color: var(--text-gray);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.popup-slide-text h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.35;
+    margin-bottom: 6px;
+}
+
+.popup-slide-text p {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    line-height: 1.4;
+}
+
 .popup-slide-image {
-    width: 100%;
-    aspect-ratio: 16/9;
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
     border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 12px;
 }
 
 .popup-slide-image img {
@@ -1783,29 +1807,13 @@ a.step-card:hover .step-icon {
     object-fit: cover;
 }
 
-.popup-slide-text {
-    text-align: center;
-}
-
-.popup-slide-text h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-dark);
-    margin-bottom: 4px;
-}
-
-.popup-slide-text p {
-    font-size: 0.8rem;
-    color: var(--text-gray);
-}
-
 .popup-pagination {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     gap: 4px;
     margin-top: 12px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-gray);
 }
 
