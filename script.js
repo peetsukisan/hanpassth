@@ -47,9 +47,6 @@ let cardsPerView = 3;
 let autoPlayInterval = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Initialize mobile view toggle (check saved preference)
-    initMobileViewToggle();
-
     // Load site settings first
     await loadSiteSettings();
 
@@ -67,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize search
     initSearch();
 
-    // Initialize bottom navigation (mobile)
+    // Initialize bottom navigation
     initBottomNav();
 });
 
@@ -766,54 +763,109 @@ function setActiveNavItem(navItems, targetId) {
     });
 }
 
-// ==================== MOBILE VIEW TOGGLE ====================
+// ==================== BOTTOM BANNER ====================
 
-// Toggle between desktop and mobile view
-function toggleMobileView() {
-    const body = document.body;
-    const toggleBtn = document.getElementById('view-toggle-btn');
-    const isMobileMode = body.classList.toggle('mobile-view-mode');
+let bottomBannerData = [];
+let currentBottomBannerIndex = 0;
 
-    // Update button icons
-    if (toggleBtn) {
-        const mobileIcon = toggleBtn.querySelector('.icon-mobile');
-        const desktopIcon = toggleBtn.querySelector('.icon-desktop');
+// Load and show bottom banner from popups
+async function loadBottomBanner() {
+    const hideUntil = localStorage.getItem('bottomBannerHideUntil');
+    const now = new Date().getTime();
 
-        if (isMobileMode) {
-            mobileIcon.style.display = 'none';
-            desktopIcon.style.display = 'block';
-            toggleBtn.title = 'สลับเป็นโหมดเดสก์ท็อป';
-        } else {
-            mobileIcon.style.display = 'block';
-            desktopIcon.style.display = 'none';
-            toggleBtn.title = 'สลับเป็นโหมดมือถือ';
-        }
+    // Check if banner should be hidden
+    if (hideUntil && now < parseInt(hideUntil)) {
+        return;
     }
 
-    // Save preference to localStorage
-    localStorage.setItem('mobileViewMode', isMobileMode ? 'true' : 'false');
-
-    // Re-initialize bottom nav if switching to mobile mode
-    if (isMobileMode) {
-        initBottomNav();
+    try {
+        // Use existing popup data or load from Firebase
+        const popups = await dbService.getPopups(true);
+        if (popups && popups.length > 0) {
+            bottomBannerData = popups;
+            renderBottomBanner();
+        }
+    } catch (error) {
+        console.error('Error loading bottom banner:', error);
     }
 }
 
-// Check and apply saved mobile view preference on page load
-function initMobileViewToggle() {
-    const savedMode = localStorage.getItem('mobileViewMode');
-    const toggleBtn = document.getElementById('view-toggle-btn');
+function renderBottomBanner() {
+    const banner = document.getElementById('bottom-banner');
+    const slidesContainer = document.getElementById('bottom-banner-slides');
+    const paginationContainer = document.getElementById('bottom-banner-pagination');
 
-    if (savedMode === 'true') {
-        document.body.classList.add('mobile-view-mode');
+    if (!banner || !slidesContainer || bottomBannerData.length === 0) return;
 
-        // Update button icons
-        if (toggleBtn) {
-            const mobileIcon = toggleBtn.querySelector('.icon-mobile');
-            const desktopIcon = toggleBtn.querySelector('.icon-desktop');
-            mobileIcon.style.display = 'none';
-            desktopIcon.style.display = 'block';
-            toggleBtn.title = 'สลับเป็นโหมดเดสก์ท็อป';
+    // Render slides - text on left, image on right
+    slidesContainer.innerHTML = bottomBannerData.map((popup, i) => `
+        <div class="bottom-banner-slide ${i === 0 ? 'active' : ''}" data-index="${i}">
+            <div class="bottom-banner-slide-text">
+                <h4>${popup.title || 'โปรโมชั่นพิเศษ'}</h4>
+                <h3>${popup.heading || popup.message || ''}</h3>
+                <p>${popup.message || ''}</p>
+            </div>
+            ${popup.image ? `<img src="${popup.image}" alt="${popup.title || 'Banner'}">` : ''}
+        </div>
+    `).join('');
+
+    // Render pagination as "1/3" format
+    if (bottomBannerData.length > 1) {
+        paginationContainer.innerHTML = `
+            <span class="bottom-banner-page-info">
+                <span id="banner-current-page">1</span>/${bottomBannerData.length}
+            </span>
+        `;
+    } else {
+        paginationContainer.innerHTML = '';
+    }
+
+    // Show banner
+    banner.classList.add('show');
+
+    // Auto-slide if multiple slides
+    if (bottomBannerData.length > 1) {
+        setInterval(() => {
+            currentBottomBannerIndex = (currentBottomBannerIndex + 1) % bottomBannerData.length;
+            updateBottomBannerSlide();
+        }, 5000);
+    }
+}
+
+function updateBottomBannerSlide() {
+    const slides = document.querySelectorAll('.bottom-banner-slide');
+    const pageInfo = document.getElementById('banner-current-page');
+
+    slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentBottomBannerIndex);
+    });
+
+    if (pageInfo) {
+        pageInfo.textContent = currentBottomBannerIndex + 1;
+    }
+}
+
+function goToBottomBannerSlide(index) {
+    currentBottomBannerIndex = index;
+    updateBottomBannerSlide();
+}
+
+function closeBottomBanner() {
+    const banner = document.getElementById('bottom-banner');
+    const todayCheck = document.getElementById('bottom-banner-today-check');
+
+    if (banner) {
+        banner.classList.remove('show');
+
+        // Check if "today" checkbox is checked - hide for 1 day
+        if (todayCheck && todayCheck.checked) {
+            const hideUntil = new Date().getTime() + (24 * 60 * 60 * 1000);
+            localStorage.setItem('bottomBannerHideUntil', hideUntil);
         }
     }
 }
+
+// Initialize bottom banner after page loads
+setTimeout(() => {
+    loadBottomBanner();
+}, 2000);

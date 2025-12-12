@@ -33,10 +33,20 @@ html {
 
 body {
     font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-white);
+    background-color: #f0f0f0;
     color: var(--text-dark);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    padding-bottom: 80px;
+}
+
+/* ===== Mobile-Only App Container ===== */
+.app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: var(--bg-white);
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 /* ===== Header ===== */
@@ -592,10 +602,76 @@ body {
     }
 }
 
+/* ===== Quick Actions Section ===== */
+.quick-actions-section {
+    padding: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--bg-white);
+}
+
+.quick-actions-card {
+    background: var(--bg-white);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.quick-actions-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 16px;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.quick-action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    padding: 10px 5px;
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.quick-action-item:hover {
+    background: var(--bg-light);
+}
+
+.quick-action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.quick-action-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-align: center;
+    white-space: nowrap;
+}
+
 
 /* ===== How to Use Section ===== */
 .how-to-section {
-    padding: 80px 24px;
+    padding: 40px 20px;
     background: var(--bg-light);
 }
 
@@ -614,69 +690,79 @@ body {
 
 .section-subtitle {
     color: var(--text-gray);
-    font-size: 1.1rem;
-    margin-bottom: 50px;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
 }
 
+/* Steps Grid - แสดงเป็น cards แนวตั้ง */
 .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .step-card {
     background: var(--bg-white);
-    border-radius: var(--radius-lg);
-    padding: 40px 24px;
-    box-shadow: var(--shadow-sm);
+    border-radius: 20px;
+    padding: 30px 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     position: relative;
     transition: var(--transition);
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .step-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .step-number {
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     background: var(--primary-blue);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
 .step-icon {
-    width: 70px;
-    height: 70px;
-    background: linear-gradient(135deg, rgba(43, 74, 207, 0.1) 0%, rgba(43, 74, 207, 0.05) 100%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(43, 74, 207, 0.12) 0%, rgba(43, 74, 207, 0.06) 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 20px;
+    margin: 0 auto 16px;
     color: var(--primary-blue);
 }
 
+.step-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
 .step-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-dark);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .step-desc {
     color: var(--text-gray);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     line-height: 1.5;
+    display: none;
+    /* Hide description for cleaner look */
 }
 
 /* ===== Footer ===== */
@@ -1599,123 +1685,207 @@ a.step-card:hover .step-icon {
     }
 }
 
-/* ===== View Toggle Button ===== */
-.view-toggle-btn {
+/* ===== Bottom Banner Popup (GS25 Style) ===== */
+.bottom-banner {
+    display: none;
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 50px;
-    height: 50px;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 460px;
+    padding: 0 10px;
+    z-index: 998;
+}
+
+.bottom-banner.show {
+    display: block;
+}
+
+.bottom-banner-content {
+    background: linear-gradient(135deg, #ffe8f0 0%, #ffeee5 50%, #fff5e6 100%);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Today checkbox at top */
+.bottom-banner-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 12px;
+}
+
+.bottom-banner-today {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    cursor: pointer;
+}
+
+.bottom-banner-today input {
+    width: 14px;
+    height: 14px;
+}
+
+.bottom-banner-slides {
+    display: flex;
+    overflow: hidden;
+}
+
+.bottom-banner-slide {
+    flex: 0 0 100%;
+    display: none;
+}
+
+.bottom-banner-slide.active {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bottom-banner-slide-text {
+    flex: 1;
+    padding-right: 10px;
+}
+
+.bottom-banner-slide-text h4 {
+    font-size: 0.7rem;
+    color: var(--text-gray);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.bottom-banner-slide-text h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1.35;
+    margin-bottom: 8px;
+}
+
+.bottom-banner-slide-text p {
+    font-size: 0.8rem;
+    color: var(--text-gray);
+}
+
+.bottom-banner-slide img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.bottom-banner-pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 4px;
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: var(--text-gray);
+}
+
+.bottom-banner-page-info {
+    font-weight: 500;
+}
+
+.bottom-banner-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: var(--primary-blue);
-    color: white;
+    background: rgba(255, 255, 255, 0.8);
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(43, 74, 207, 0.4);
+    color: var(--text-gray);
     transition: var(--transition);
-    z-index: 999;
 }
 
-.view-toggle-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 25px rgba(43, 74, 207, 0.5);
+.bottom-banner-close:hover {
+    background: white;
+    color: var(--text-dark);
 }
 
-.view-toggle-btn svg {
-    stroke: white;
+/* ===== Mobile-Only Overrides (All Devices) ===== */
+/* Force mobile layout on ALL screen sizes */
+
+.header {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--bg-white);
 }
 
-/* ===== Forced Mobile View Mode ===== */
-/* When body has .mobile-view-mode class, force mobile layout on any screen size */
+.hero-section,
+.carousel-section,
+.how-to-section,
+.faq-section {
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--bg-white);
+}
 
-.mobile-view-mode .bottom-nav {
+.footer {
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+}
+
+.bottom-nav {
     display: flex !important;
     justify-content: space-around;
+    max-width: 480px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
 }
 
-.mobile-view-mode .nav-menu {
+.nav-menu {
     display: none !important;
 }
 
-.mobile-view-mode {
-    padding-bottom: 80px;
+.steps-grid {
+    grid-template-columns: 1fr !important;
 }
 
-.mobile-view-mode .footer {
-    padding-bottom: calc(30px + 70px);
+.messenger-btn {
+    bottom: 100px;
+    right: calc(50% - 230px);
 }
 
-.mobile-view-mode .messenger-btn {
-    bottom: calc(80px + 20px);
-}
-
-.mobile-view-mode .view-toggle-btn {
-    bottom: calc(80px + 20px);
-    left: 20px;
-}
-
-.mobile-view-mode .header-container {
-    justify-content: center;
-}
-
-.mobile-view-mode .logo {
-    flex: 1;
-}
-
-/* Mobile phone frame wrapper for desktop when in mobile mode */
-@media (min-width: 769px) {
-
-    .mobile-view-mode .carousel-section,
-    .mobile-view-mode .how-to-section,
-    .mobile-view-mode .faq-section,
-    .mobile-view-mode .hero-section {
-        max-width: 480px;
-        margin-left: auto;
-        margin-right: auto;
+@media (max-width: 480px) {
+    .messenger-btn {
+        right: 20px;
     }
 
-    .mobile-view-mode .header {
-        max-width: 480px;
-        margin: 0 auto;
-        border-left: 1px solid var(--border-color);
-        border-right: 1px solid var(--border-color);
+    .bottom-nav {
+        left: 0;
+        right: 0;
+        transform: none;
+        max-width: none;
     }
 
-    .mobile-view-mode .footer {
-        max-width: 480px;
-        margin-left: auto;
-        margin-right: auto;
-        border-left: 1px solid var(--border-color);
-        border-right: 1px solid var(--border-color);
+    .header,
+    .hero-section,
+    .carousel-section,
+    .how-to-section,
+    .faq-section,
+    .footer {
+        max-width: none;
     }
 
-    .mobile-view-mode .bottom-nav {
-        max-width: 480px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-left: 1px solid var(--border-color);
-        border-right: 1px solid var(--border-color);
-    }
-
-    .mobile-view-mode .steps-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .mobile-view-mode .promo-card {
-        min-height: 200px;
-    }
-
-    .mobile-view-mode .banner-content .card-title {
-        font-size: 1.3rem;
-    }
-}
-
-/* Hide toggle button on actual mobile devices - they don't need it */
-@media (max-width: 768px) {
-    .view-toggle-btn {
-        display: none;
+    .bottom-banner {
+        max-width: none;
+        padding: 0 16px;
     }
 }

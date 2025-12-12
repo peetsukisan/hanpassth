@@ -13,40 +13,30 @@
     <link rel="stylesheet" href="detail.css">
 </head>
 
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="20" r="18" stroke="#2B4ACF" stroke-width="3" />
-                        <path d="M12 20C12 15.5817 15.5817 12 20 12C24.4183 12 28 15.5817 28 20" stroke="#2B4ACF"
-                            stroke-width="3" stroke-linecap="round" />
-                        <circle cx="20" cy="20" r="4" fill="#2B4ACF" />
-                    </svg>
-                </div>
-                <span class="logo-text">MyBrand</span>
-            </a>
-
-            <nav class="nav-menu">
-                <a href="index.html#promotions" class="nav-link active">โปรโมชั่น</a>
-                <a href="index.html#how-to-use" class="nav-link">ขั้นตอนการใช้งาน</a>
-                <a href="index.html#faq" class="nav-link">ปัญหาที่พบบ่อย</a>
-            </nav>
+<body class="detail-page">
+    <!-- App Header -->
+    <header class="app-header">
+        <button class="app-back-btn" onclick="history.back()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
+        </button>
+        <h1 class="app-header-title" id="app-header-title">รายละเอียด</h1>
+        <div class="app-header-actions">
+            <button class="app-action-btn" onclick="sharePromo()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+            </button>
         </div>
     </header>
 
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-        <div class="breadcrumb-container">
-            <a href="index.html">หน้าหลัก</a>
-            <span class="separator">/</span>
-            <a href="index.html#promotions">โปรโมชั่น</a>
-            <span class="separator">/</span>
-            <span id="breadcrumb-title">รายละเอียด</span>
-        </div>
-    </nav>
 
     <!-- Hero Banner -->
     <section class="detail-hero" id="detail-hero">
@@ -115,18 +105,16 @@
                 // Update page title
                 document.title = promo.title + ' - MyBrand';
 
-                // Update breadcrumb
-                document.getElementById('breadcrumb-title').textContent = promo.title;
+                // Update App Header title
+                document.getElementById('app-header-title').textContent = promo.title;
 
                 // Check if hide header is enabled
                 const hero = document.getElementById('detail-hero');
                 const heroBg = document.getElementById('hero-bg');
-                const breadcrumb = document.querySelector('.breadcrumb');
 
                 if (promo.hideHeader) {
-                    // Hide hero and breadcrumb, show only content
+                    // Hide hero, show only content
                     hero.style.display = 'none';
-                    if (breadcrumb) breadcrumb.style.display = 'none';
                 } else {
                     // Update hero
 
@@ -194,6 +182,21 @@
                 document.getElementById('hero-title').textContent = 'เกิดข้อผิดพลาด';
             }
         });
+
+        // Share promotion
+        function sharePromo() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback: copy URL to clipboard
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => alert('คัดลอกลิงก์แล้ว!'))
+                    .catch(console.error);
+            }
+        }
     </script>
 </body>
 

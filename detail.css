@@ -1,42 +1,81 @@
 /* ===== Detail Pages Styles ===== */
 
-/* Breadcrumb */
-.breadcrumb {
-    background: var(--bg-light);
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border-color);
+/* Detail Page - Mobile-Only Layout */
+.detail-page {
+    background-color: #f0f0f0;
+    padding-bottom: 0;
 }
 
-.breadcrumb-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px;
+/* ===== App Header ===== */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 0.85rem;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border-color);
+    max-width: 480px;
+    margin: 0 auto;
 }
 
-.breadcrumb a {
-    color: var(--text-gray);
-    text-decoration: none;
+.app-back-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    border-radius: 50%;
     transition: var(--transition);
 }
 
-.breadcrumb a:hover {
-    color: var(--primary-blue);
+.app-back-btn:hover {
+    background: var(--bg-light);
 }
 
-.breadcrumb .separator {
-    color: var(--text-light);
-}
-
-.breadcrumb span:last-child {
+.app-header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--text-dark);
-    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    margin: 0 auto;
 }
 
-/* Detail Hero */
+.app-header-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.app-action-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.app-action-btn:hover {
+    background: var(--bg-light);
+}
+
+/* Detail Hero - Full width for app style */
 .detail-hero {
     position: relative;
     padding: 80px 24px;
@@ -148,13 +187,15 @@
 
 /* Detail Content */
 .detail-content {
-    padding: 50px 24px 80px;
+    padding: 30px 20px 50px;
     background: var(--bg-white);
+    max-width: 480px;
+    margin: 0 auto;
 }
 
 .detail-container {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
 }
 
 .detail-section {
