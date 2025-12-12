@@ -1668,6 +1668,7 @@ a.step-card:hover .step-icon {
     align-items: center;
     gap: 6px;
     font-size: 0.85rem;
+    font-weight: 600;
     color: white;
     cursor: pointer;
 }
@@ -1700,46 +1701,8 @@ a.step-card:hover .step-icon {
     overflow: hidden;
 }
 
-.popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
+/* popup-header removed - using popup-top-bar */
 
-.popup-today {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
-    color: var(--text-gray);
-    cursor: pointer;
-}
-
-.popup-today input {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--primary-blue);
-}
-
-.popup-close {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(0, 0, 0, 0.08);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-gray);
-    transition: var(--transition);
-}
-
-.popup-close:hover {
-    background: rgba(0, 0, 0, 0.15);
-    color: var(--text-dark);
-}
 
 .popup-slides {
     display: flex;
