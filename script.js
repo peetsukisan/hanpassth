@@ -311,6 +311,11 @@ function renderGuides() {
         subtitle.textContent = `เริ่มต้นใช้งานง่ายๆ เพียง ${guides.length} ขั้นตอน`;
     }
 
+    // Force 2-column grid layout
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+    grid.style.gap = '12px';
+
     grid.innerHTML = guides.map(guide => {
         const iconSvg = iconSvgs[guide.icon] || iconSvgs['star'];
 
