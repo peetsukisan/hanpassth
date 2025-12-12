@@ -1687,6 +1687,8 @@ a.step-card:hover .step-icon {
     cursor: pointer;
     line-height: 1;
     padding: 0 8px;
+    z-index: 10;
+    position: relative;
 }
 
 .popup-close-x:hover {
