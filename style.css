@@ -1726,6 +1726,7 @@ a.step-card:hover .step-icon {
     padding: 16px;
     position: relative;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    min-height: 180px;
 }
 
 .popup-header {
@@ -1812,20 +1813,19 @@ a.step-card:hover .step-icon {
 }
 
 .popup-slide-image {
-    width: 140px;
-    min-width: 140px;
+    width: 45%;
+    max-width: 180px;
     flex-shrink: 0;
     border-radius: 12px;
     overflow: visible;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-end;
 }
 
 .popup-slide-image img {
     width: 100%;
     height: auto;
-    max-height: 150px;
     object-fit: contain;
     border-radius: 8px;
 }
