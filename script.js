@@ -873,4 +873,39 @@ function closePopup() {
 // Initialize popup after page loads
 setTimeout(() => {
     loadPopup();
+    initPopupSwipe();
 }, 2000);
+
+// Touch swipe for popup
+function initPopupSwipe() {
+    const slidesContainer = document.getElementById('popup-slides');
+    if (!slidesContainer) return;
+
+    let startX = 0;
+    let endX = 0;
+
+    slidesContainer.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    }, { passive: true });
+
+    slidesContainer.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const diff = startX - endX;
+        const threshold = 50;
+
+        if (Math.abs(diff) > threshold) {
+            if (diff > 0) {
+                // Swipe left - next slide
+                currentBottomBannerIndex = (currentBottomBannerIndex + 1) % bottomBannerData.length;
+            } else {
+                // Swipe right - previous slide
+                currentBottomBannerIndex = (currentBottomBannerIndex - 1 + bottomBannerData.length) % bottomBannerData.length;
+            }
+            updatePopupSlide();
+        }
+    }
+}
